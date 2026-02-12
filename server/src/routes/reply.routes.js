@@ -1,9 +1,9 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { protect } = require("../middleware/auth.middleware");
-const { createReply, deleteReply } = require("../controllers/reply.controller");
+import { protect } from "../middleware/auth.middleware.js";
+import { createReply, deleteReply } from "../controllers/reply.controller.js";
 
 router.post("/", protect, createReply);
 router.delete("/:id", protect, deleteReply);
 
-module.exports = router;
+export default router;

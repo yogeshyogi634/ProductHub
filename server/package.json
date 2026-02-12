@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Perkle - Internal Product Updates & Feedback API",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",

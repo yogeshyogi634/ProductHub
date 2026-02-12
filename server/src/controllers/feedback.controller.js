@@ -1,5 +1,5 @@
-const prisma = require("../utils/prisma");
-const { success, error } = require("../utils/response");
+import prisma from "../utils/prisma.js";
+import { success, error } from "../utils/response.js";
 
 /**
  * GET /api/feedback?productId=xxx
@@ -150,4 +150,4 @@ async function deleteFeedback(req, res, next) {
   }
 }
 
-module.exports = { getFeedback, createFeedback, deleteFeedback };
+export { getFeedback, createFeedback, deleteFeedback };

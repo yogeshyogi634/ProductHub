@@ -1,5 +1,5 @@
-const prisma = require("../utils/prisma");
-const { success, error } = require("../utils/response");
+import prisma from "../utils/prisma.js";
+import { success, error } from "../utils/response.js";
 
 /**
  * GET /api/updates?productId=xxx&date=YYYY-MM-DD&status=WIP
@@ -176,7 +176,7 @@ async function createUpdate(req, res, next) {
         isOwner: true,
         votes: { up: 0, down: 0, userVote: null },
       },
-      201
+      201,
     );
   } catch (err) {
     next(err);
@@ -250,10 +250,4 @@ async function deleteUpdate(req, res, next) {
   }
 }
 
-module.exports = {
-  getUpdates,
-  getUpdateById,
-  createUpdate,
-  editUpdate,
-  deleteUpdate,
-};
+export { getUpdates, getUpdateById, createUpdate, editUpdate, deleteUpdate };

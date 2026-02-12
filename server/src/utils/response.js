@@ -18,4 +18,4 @@ function error(res, message, statusCode = 400) {
   });
 }
 
-module.exports = { success, error };
+export { success, error };

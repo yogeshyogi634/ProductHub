@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -15,30 +15,30 @@ async function main() {
       order: 0,
     },
     {
-      name: "Collectbot",
-      slug: "collectbot",
-      icon: "code",
-      color: "#22C55E",
+      name: "Blutic",
+      slug: "blutic",
+      icon: "droplet",
+      color: "#3B82F6",
       order: 1,
     },
     {
-      name: "Approvals",
-      slug: "approvals",
-      icon: "check-circle",
-      color: "#3B82F6",
+      name: "Collectbot",
+      slug: "collectbot",
+      icon: "bot",
+      color: "#22C55E",
       order: 2,
     },
     {
-      name: "Sync Engine",
-      slug: "sync-engine",
-      icon: "refresh-cw",
+      name: "ProfileX",
+      slug: "profilex",
+      icon: "user",
       color: "#8B5CF6",
       order: 3,
     },
     {
-      name: "Settings",
-      slug: "settings",
-      icon: "settings",
+      name: "Svitch",
+      slug: "svitch",
+      icon: "toggle-left",
       color: "#EF4444",
       order: 4,
     },

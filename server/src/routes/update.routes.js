@@ -1,13 +1,13 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { protect } = require("../middleware/auth.middleware");
-const {
+import { protect } from "../middleware/auth.middleware.js";
+import {
   getUpdates,
   getUpdateById,
   createUpdate,
   editUpdate,
   deleteUpdate,
-} = require("../controllers/update.controller");
+} from "../controllers/update.controller.js";
 
 router.get("/", protect, getUpdates);
 router.get("/:id", protect, getUpdateById);
@@ -15,4 +15,4 @@ router.post("/", protect, createUpdate);
 router.put("/:id", protect, editUpdate);
 router.delete("/:id", protect, deleteUpdate);
 
-module.exports = router;
+export default router;

@@ -1,14 +1,14 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { protect } = require("../middleware/auth.middleware");
-const {
+import { protect } from "../middleware/auth.middleware.js";
+import {
   getFeedback,
   createFeedback,
   deleteFeedback,
-} = require("../controllers/feedback.controller");
+} from "../controllers/feedback.controller.js";
 
 router.get("/", protect, getFeedback);
 router.post("/", protect, createFeedback);
 router.delete("/:id", protect, deleteFeedback);
 
-module.exports = router;
+export default router;

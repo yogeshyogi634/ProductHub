@@ -1,5 +1,5 @@
-const prisma = require("../utils/prisma");
-const { success } = require("../utils/response");
+import prisma from "../utils/prisma.js";
+import { success } from "../utils/response.js";
 
 /**
  * GET /api/products
@@ -31,4 +31,4 @@ async function getProducts(req, res, next) {
   }
 }
 
-module.exports = { getProducts };
+export { getProducts };

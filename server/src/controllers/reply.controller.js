@@ -1,5 +1,5 @@
-const prisma = require("../utils/prisma");
-const { success, error } = require("../utils/response");
+import prisma from "../utils/prisma.js";
+import { success, error } from "../utils/response.js";
 
 /**
  * POST /api/replies
@@ -81,4 +81,4 @@ async function deleteReply(req, res, next) {
   }
 }
 
-module.exports = { createReply, deleteReply };
+export { createReply, deleteReply };

@@ -1,8 +1,8 @@
-const prisma = require("../utils/prisma");
-const { signToken } = require("../utils/jwt");
-const { success, error } = require("../utils/response");
-const { validateDomain } = require("../middleware/auth.middleware");
-const { verifyGoogleToken } = require("../services/auth.service");
+import prisma from "../utils/prisma.js";
+import { signToken } from "../utils/jwt.js";
+import { success, error } from "../utils/response.js";
+import { validateDomain } from "../middleware/auth.middleware.js";
+import { verifyGoogleToken } from "../services/auth.service.js";
 
 /**
  * POST /api/auth/google
@@ -156,4 +156,4 @@ async function devLogin(req, res, next) {
   }
 }
 
-module.exports = { googleLogin, getMe, logout, devLogin };
+export { googleLogin, getMe, logout, devLogin };
