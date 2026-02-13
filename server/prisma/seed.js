@@ -65,17 +65,45 @@ async function main() {
   });
   console.log(`  ✅ Admin user: ${adminUser.email}`);
 
-  // ─── Create a test member user ───
-  const memberUser = await prisma.user.upsert({
+  // ─── Create management users ───
+  const managementUsers = [
+    {
+      email: "ceo@neokred.tech",
+      name: "CEO",
+      role: "MANAGEMENT",
+    },
+    {
+      email: "cto@neokred.tech", 
+      name: "CTO",
+      role: "MANAGEMENT",
+    },
+    {
+      email: "manager1@neokred.tech",
+      name: "Manager One",
+      role: "MANAGEMENT",
+    },
+  ];
+
+  for (const mgmtUser of managementUsers) {
+    const user = await prisma.user.upsert({
+      where: { email: mgmtUser.email },
+      update: {},
+      create: mgmtUser,
+    });
+    console.log(`  ✅ Management user: ${user.email}`);
+  }
+
+  // ─── Create a test employee user ───
+  const employeeUser = await prisma.user.upsert({
     where: { email: "madhav@neokred.tech" },
     update: {},
     create: {
       email: "madhav@neokred.tech",
       name: "Madhav",
-      role: "MEMBER",
+      role: "EMPLOYEE",
     },
   });
-  console.log(`  ✅ Member user: ${memberUser.email}`);
+  console.log(`  ✅ Employee user: ${employeeUser.email}`);
 
   // ─── Create sample updates ───
   const collectbot = await prisma.product.findUnique({
@@ -101,7 +129,7 @@ async function main() {
         message: "New UI is good!",
         isAnonymous: true,
         productId: collectbot.id,
-        authorId: memberUser.id,
+        authorId: employeeUser.id,
       },
     });
     console.log(`  ✅ Sample feedback: "${sampleFeedback.message}"`);

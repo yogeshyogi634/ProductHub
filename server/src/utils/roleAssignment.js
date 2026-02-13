@@ -1,0 +1,99 @@
+// Hardcoded management email addresses (fallback)
+const MANAGEMENT_EMAILS = [
+  "ceo@neokred.tech",
+  "cto@neokred.tech", 
+  "manager1@neokred.tech",
+  "manager2@neokred.tech",
+  "lead@neokred.tech",
+  "teamlead@neokred.tech",
+  "hr@neokred.tech",
+  "operations@neokred.tech"
+];
+
+// Department-based role mapping
+const DEPARTMENT_ROLE_MAP = {
+  "Engineering": "MANAGEMENT",
+  "Product": "MANAGEMENT", 
+  "Design": "MANAGEMENT",
+  "QA": "MANAGEMENT",
+  "DevOps": "MANAGEMENT",
+  "CTO Office": "ADMIN",
+  "CEO Office": "ADMIN",
+  "Management": "MANAGEMENT",
+  "Leadership": "ADMIN",
+  "Admin": "ADMIN",
+  "HR": "MANAGEMENT",
+  "Operations": "MANAGEMENT",
+  "Marketing": "EMPLOYEE",
+  "Sales": "EMPLOYEE",
+  "Finance": "EMPLOYEE",
+  "Legal": "EMPLOYEE",
+  "Support": "EMPLOYEE"
+};
+
+/**
+ * Assign role based on email and department
+ * @param {string} email - User's email address
+ * @param {string} department - User's department (optional)
+ * @returns {string} Role - "ADMIN", "MANAGEMENT", or "EMPLOYEE"
+ */
+function assignRole(email, department = null) {
+  // Admin has full access (specific admin emails)
+  if (email === "admin@neokred.tech" || email === "ceo@neokred.tech") {
+    return "ADMIN";
+  }
+  
+  // Department-based role assignment (primary method)
+  if (department && DEPARTMENT_ROLE_MAP[department]) {
+    return DEPARTMENT_ROLE_MAP[department];
+  }
+  
+  // Fallback to email-based assignment for existing users
+  if (MANAGEMENT_EMAILS.includes(email)) {
+    return "MANAGEMENT";
+  }
+  
+  // Default role for all other verified domain users
+  return "EMPLOYEE";
+}
+
+/**
+ * Check if user has permission for a specific action
+ * @param {string} userRole - User's role
+ * @param {string} action - Action to check ("CREATE_UPDATE", "CREATE_REPLY", "CREATE_FEEDBACK")
+ * @returns {boolean} True if user has permission
+ */
+function hasPermission(userRole, action) {
+  const permissions = {
+    ADMIN: ["CREATE_UPDATE", "CREATE_REPLY", "CREATE_FEEDBACK", "DELETE_ANY", "EDIT_ANY"],
+    MANAGEMENT: ["CREATE_UPDATE", "CREATE_REPLY", "CREATE_FEEDBACK"],
+    EMPLOYEE: ["CREATE_FEEDBACK"]
+  };
+  
+  return permissions[userRole]?.includes(action) || false;
+}
+
+/**
+ * Get all available departments
+ * @returns {Array} List of available departments
+ */
+function getAvailableDepartments() {
+  return Object.keys(DEPARTMENT_ROLE_MAP).sort();
+}
+
+/**
+ * Get department role mapping for frontend display
+ * @returns {Object} Department to role mapping
+ */
+function getDepartmentRoleMap() {
+  return { ...DEPARTMENT_ROLE_MAP };
+}
+
+export { 
+  assignRole, 
+  hasPermission, 
+  getAvailableDepartments, 
+  getDepartmentRoleMap,
+  MANAGEMENT_EMAILS,
+  DEPARTMENT_ROLE_MAP 
+};

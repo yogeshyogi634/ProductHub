@@ -3,6 +3,7 @@ import { signToken } from "../utils/jwt.js";
 import { success, error } from "../utils/response.js";
 import { validateDomain } from "../middleware/auth.middleware.js";
 import { verifyGoogleToken } from "../services/auth.service.js";
+import { assignRole } from "../utils/roleAssignment.js";
 
 /**
  * POST /api/auth/google
@@ -40,6 +41,7 @@ async function googleLogin(req, res, next) {
           email: googleUser.email,
           name: googleUser.name,
           avatarUrl: googleUser.avatarUrl,
+          role: assignRole(googleUser.email),
         },
       });
     } else {
@@ -94,9 +96,38 @@ async function getMe(req, res) {
 async function logout(req, res) {
   res.cookie("token", "", {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     expires: new Date(0),
   });
   return success(res, { message: "Logged out successfully." });
+}
+
+/**
+ * GET /api/auth/users
+ * Get all users (admin only)
+ */
+async function getAllUsers(req, res, next) {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    
+    return success(res, { users });
+  } catch (err) {
+    next(err);
+  }
 }
 
 // ─── DEV ONLY: Login without Google (for testing) ───
@@ -128,6 +159,7 @@ async function devLogin(req, res, next) {
         data: {
           email,
           name: email.split("@")[0],
+          role: assignRole(email),
         },
       });
     }
@@ -156,4 +188,4 @@ async function devLogin(req, res, next) {
   }
 }
 
-export { googleLogin, getMe, logout, devLogin };
+export { googleLogin, getMe, logout, getAllUsers, devLogin };

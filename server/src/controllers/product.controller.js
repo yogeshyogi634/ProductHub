@@ -12,16 +12,6 @@ async function getProducts(req, res, next) {
       select: {
         id: true,
         name: true,
-        slug: true,
-        icon: true,
-        color: true,
-        order: true,
-        _count: {
-          select: {
-            updates: true,
-            feedbacks: true,
-          },
-        },
       },
     });
 

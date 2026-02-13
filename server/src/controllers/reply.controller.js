@@ -1,5 +1,6 @@
 import prisma from "../utils/prisma.js";
 import { success, error } from "../utils/response.js";
+import { hasPermission } from "../utils/roleAssignment.js";
 
 /**
  * POST /api/replies
@@ -11,6 +12,15 @@ async function createReply(req, res, next) {
   try {
     const { message, feedbackId } = req.body;
 
+    // Check permissions
+    if (!hasPermission(req.user.role, "CREATE_REPLY")) {
+      return error(
+        res,
+        "Access denied. Only management can reply to feedback. Contact your administrator for elevated permissions.",
+        403
+      );
+    }
+
     if (!message || !message.trim()) {
       return error(res, "Message is required.", 400);
     }
@@ -21,9 +31,17 @@ async function createReply(req, res, next) {
     // Verify feedback exists
     const feedback = await prisma.feedback.findUnique({
       where: { id: feedbackId },
+      include: {
+        replies: true,
+      },
     });
     if (!feedback) {
       return error(res, "Feedback not found.", 404);
+    }
+
+    // Check if feedback already has a reply
+    if (feedback.replies.length > 0) {
+      return error(res, "This feedback already has a reply. Only one reply per feedback is allowed.", 400);
     }
 
     const reply = await prisma.reply.create({
