@@ -1,0 +1,56 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        'background-app': 'var(--color-background-app)',
+        'background-card-primary': 'var(--color-background-card-primary)',
+        'background-card-secondary': 'var(--color-background-card-secondary)',
+        'background-actions-error': 'var(--color-background-actions-error)',
+        'background-actions-warning-subtle': 'var(--color-background-actions-warning-subtle)',
+        'background-actions-success-subtle': 'var(--color-background-actions-success-subtle)',
+        'brand-primary': 'var(--color-brand-primary)',
+        'brand-wakame': 'var(--color-brand-wakame)',
+        'text-default-primary': 'var(--color-text-default-primary)',
+        'text-default-secondary': 'var(--color-text-default-secondary)',
+        'text-brand-on-background': 'var(--color-text-brand-on-background)',
+        'text-actions-warning': 'var(--color-text-actions-warning)',
+        'text-actions-success': 'var(--color-text-actions-success)',
+        'stroke-default-primary': 'var(--color-stroke-default-primary)',
+        'stroke-default-primary-v2': 'var(--color-stroke-default-primary-v2)',
+        'stroke-default-inverse': 'var(--color-stroke-default-inverse)',
+        'stroke-actions-error-hover': 'var(--color-stroke-actions-error-hover)',
+        'stroke-actions-warning': 'var(--color-stroke-actions-warning)',
+        'stroke-actions-success': 'var(--color-stroke-actions-success)',
+        'icon-default-primary': 'var(--color-icon-default-primary)',
+        'icon-default-secondary': 'var(--color-icon-default-secondary)',
+        'icon-default-alpha': 'var(--color-icon-default-alpha)',
+      },
+      spacing: {
+        '3xs': 'var(--spacing-3xs)',
+        '2xs': 'var(--spacing-2xs)',
+        'xs': 'var(--spacing-xs)',
+        'sm': 'var(--spacing-sm)',
+        'md': 'var(--spacing-md)',
+        'lg': 'var(--spacing-lg)',
+        'lg-2': 'var(--spacing-lg-2)',
+        'xl': 'var(--spacing-xl)',
+      },
+      borderRadius: {
+        '3xs': 'var(--radius-3xs)',
+        '2xs': 'var(--radius-2xs)',
+        'xs': 'var(--radius-xs)',
+        'sm': 'var(--radius-sm)',
+        'max': 'var(--radius-max)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+}

@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: var(--font-inter);
+
+  --color-background-app: #fafafa;
+  --color-background-card-primary: #f5f5f5;
+  --color-background-card-secondary: #e5e5e5;
+  --color-background-actions-error: #dc2626;
+  --color-background-actions-warning-subtle: #fefbe8;
+  --color-background-actions-success-subtle: #edfcf2;
+  --color-brand-primary: #ff9800;
+  --color-brand-wakame: #006768;
+
+  --color-text-default-primary: #1e1e1e;
+  --color-text-default-secondary: #525252;
+  --color-text-brand-on-background: #0f0f0f;
+  --color-text-actions-warning: #713b12;
+  --color-text-actions-success: #084c2e;
+
+  --color-stroke-default-primary: #d6d6d6;
+  --color-stroke-default-primary-v2: #e5e5e5;
+  --color-stroke-default-inverse: #333333;
+  --color-stroke-actions-error-hover: #b91c1c;
+  --color-stroke-actions-warning: #a15c07;
+  --color-stroke-actions-success: #084c2e;
+
+  --color-icon-default-primary: #1e1e1e;
+  --color-icon-default-secondary: #3d3d3d;
+  --color-icon-default-alpha: #fafafa;
+
+  --spacing-3xs: 2px;
+  --spacing-2xs: 4px;
+  --spacing-xs: 6px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-lg-2: 20px;
+  --spacing-xl: 24px;
+
+  --radius-3xs: 2px;
+  --radius-2xs: 4px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-max: 9999px;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background-app);
+    color: var(--color-text-default-primary);
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+}
+
+/* ── Dark Mode Overrides ──────────────────────────────────────────────── */
+.dark {
+  --color-background-app: #121212;
+  --color-background-card-primary: #1e1e1e;
+  --color-background-card-secondary: #2a2a2a;
+  --color-background-actions-error: #dc2626;
+  --color-background-actions-warning-subtle: #332b00;
+  --color-background-actions-success-subtle: #0a2918;
+  --color-brand-primary: #ff9800;
+  --color-brand-wakame: #00897b;
+
+  --color-text-default-primary: #f0f0f0;
+  --color-text-default-secondary: #a3a3a3;
+  --color-text-brand-on-background: #0f0f0f;
+  --color-text-actions-warning: #fbbf24;
+  --color-text-actions-success: #34d399;
+
+  --color-stroke-default-primary: #3a3a3a;
+  --color-stroke-default-primary-v2: #2e2e2e;
+  --color-stroke-default-inverse: #d4d4d4;
+  --color-stroke-actions-error-hover: #ef4444;
+  --color-stroke-actions-warning: #f59e0b;
+  --color-stroke-actions-success: #10b981;
+
+  --color-icon-default-primary: #e5e5e5;
+  --color-icon-default-secondary: #b0b0b0;
+  --color-icon-default-alpha: #1e1e1e;
+}
+
+/* ── Rich Text Editor list styles (restore Tailwind Preflight reset) ── */
+.rich-editor-content ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+}
+.rich-editor-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+}
+
+/* Utility: invert dark-fill SVG icons when in dark mode */
+.dark .dark-invert {
+  filter: brightness(0) invert(1);
+}
