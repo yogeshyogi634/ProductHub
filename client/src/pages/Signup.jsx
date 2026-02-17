@@ -1,0 +1,255 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+
+const DESIGNATIONS = [
+    "Product Manager",
+    "Engineer",
+    "Designer",
+    "QA",
+    "Finance",
+    "HR",
+    "Marketing",
+    "Other",
+];
+
+export default function SignupPage() {
+    const navigate = useNavigate();
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [designation, setDesignation] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState("");
+
+    const validateEmail = (value) => {
+        if (value && !value.endsWith("@neokred.tech")) {
+            setEmailError("Only @neokred.tech email addresses are allowed");
+            return false;
+        }
+        setEmailError("");
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+
+        if (!validateEmail(email)) return;
+
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
+        if (!designation) {
+            setError("Please select your designation");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            // Simulate network request
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Get existing users
+            const existingUsersStr = localStorage.getItem("nk_all_users");
+            const existingUsers = existingUsersStr ? JSON.parse(existingUsersStr) : [];
+
+            // Check if email exists
+            if (existingUsers.some(u => u.email === email)) {
+                setError("User with this email already exists.");
+                setLoading(false);
+                return;
+            }
+            
+            // Mock successful signup
+            const mockUser = {
+                id: `user_${Date.now()}`,
+                email: email,
+            };
+
+            const mockProfile = {
+                id: mockUser.id,
+                full_name: fullName,
+                email: email,
+                designation: designation,
+                role: "employee",
+                is_approved: false,
+                password: password, // Storing password for mock auth
+                created_at: new Date().toISOString(),
+            };
+
+            // Save to ALL users
+            const updatedUsers = [...existingUsers, mockProfile];
+            localStorage.setItem("nk_all_users", JSON.stringify(updatedUsers));
+
+            // Set session
+            localStorage.setItem("nk_user", JSON.stringify(mockUser));
+            localStorage.setItem("nk_profile", JSON.stringify(mockProfile));
+
+            navigate("/pending-approval", { replace: true });
+        } catch (err) {
+            console.error(err);
+            setError("An unexpected error occurred. Please try again.");
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen w-screen flex items-center justify-center bg-background-app px-4 py-8">
+            {/* Decorative accent */}
+            <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-wakame via-brand-primary to-brand-wakame" />
+
+            <div className="w-full max-w-md" style={{ minWidth: "400px" }}>
+                {/* Logo / Brand */}
+                <div className="text-center mb-8">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-brand-wakame mb-4 shadow-lg shadow-brand-wakame/20">
+                        <span className="text-2xl font-bold text-white">N</span>
+                    </div>
+                    <h1 className="text-2xl font-bold text-text-default-primary">Create Account</h1>
+                    <p className="text-text-default-secondary text-sm mt-1">Join the Neokred Wall</p>
+                </div>
+
+                {/* Card */}
+                <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl p-8 shadow-sm">
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Error */}
+                        {error && (
+                            <div className="bg-background-actions-error/10 border border-background-actions-error/30 text-background-actions-error px-4 py-3 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        {/* Full Name */}
+                        <div>
+                            <label className="block text-sm font-medium text-text-default-primary mb-1.5">
+                                Full Name
+                            </label>
+                            <input
+                                type="text"
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
+                                placeholder="John Doe"
+                                required
+                                className="w-full px-4 py-3 bg-white border border-stroke-default-primary rounded-lg text-text-default-primary placeholder-text-default-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all"
+                            />
+                        </div>
+
+                        {/* Email */}
+                        <div>
+                            <label className="block text-sm font-medium text-text-default-primary mb-1.5">
+                                Business Email
+                            </label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (emailError) validateEmail(e.target.value);
+                                }}
+                                onBlur={() => validateEmail(email)}
+                                placeholder="you@neokred.tech"
+                                required
+                                className={`w-full px-4 py-3 bg-white border rounded-lg text-text-default-primary placeholder-text-default-secondary/50 focus:outline-none focus:ring-2 transition-all ${emailError
+                                    ? "border-background-actions-error/50 focus:ring-background-actions-error/30 focus:border-background-actions-error/50"
+                                    : "border-stroke-default-primary focus:ring-brand-primary/40 focus:border-brand-primary"
+                                    }`}
+                            />
+                            {emailError && (
+                                <p className="mt-1.5 text-background-actions-error text-xs flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {emailError}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Password */}
+                        <div>
+                            <label className="block text-sm font-medium text-text-default-primary mb-1.5">
+                                Password
+                            </label>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Min. 6 characters"
+                                required
+                                minLength={6}
+                                className="w-full px-4 py-3 bg-white border border-stroke-default-primary rounded-lg text-text-default-primary placeholder-text-default-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all"
+                            />
+                        </div>
+
+                        {/* Designation */}
+                        <div>
+                            <label className="block text-sm font-medium text-text-default-primary mb-1.5">
+                                Designation
+                            </label>
+                            <select
+                                value={designation}
+                                onChange={(e) => setDesignation(e.target.value)}
+                                required
+                                className={`w-full px-4 py-3 bg-white border border-stroke-default-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all appearance-none ${designation ? "text-text-default-primary" : "text-text-default-secondary/50"
+                                    }`}
+                                style={{
+                                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10L6 8z' fill='%23525252'/%3E%3C/svg%3E")`,
+                                    backgroundRepeat: "no-repeat",
+                                    backgroundPosition: "right 16px center",
+                                }}
+                            >
+                                <option value="" disabled>
+                                    Select your designation
+                                </option>
+                                {DESIGNATIONS.map((d) => (
+                                    <option key={d} value={d}>
+                                        {d}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Submit */}
+                        <button
+                            type="submit"
+                            disabled={loading || !!emailError}
+                            className="w-full py-3 bg-brand-wakame hover:bg-brand-wakame/90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-wakame/15 mt-2"
+                        >
+                            {loading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                    </svg>
+                                    Creating account…
+                                </span>
+                            ) : (
+                                "Create Account"
+                            )}
+                        </button>
+                    </form>
+
+                    {/* Divider */}
+                    <div className="mt-6 pt-6 border-t border-stroke-default-primary text-center">
+                        <p className="text-text-default-secondary text-sm">
+                            Already have an account?{" "}
+                            <Link
+                                to="/login"
+                                className="text-brand-wakame hover:text-brand-wakame/80 font-medium transition-colors"
+                            >
+                                Sign in
+                            </Link>
+                        </p>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <p className="text-center text-text-default-secondary/60 text-xs mt-6">
+                    Only @neokred.tech email addresses are allowed
+                </p>
+            </div>
+        </div>
+    );
+}
