@@ -22,7 +22,11 @@ export function Navbar() {
     } = useStore();
 
     const userRole = authUser?.role || "employee";
-    const isAdmin = userRole === "admin";
+    
+    // STRICT ADMIN CHECK: Only specific emails are allowed to see/access Admin Panel
+    const ADMIN_EMAILS = ["madhav@neokred.tech", "admin@neokred.tech", "ceo@neokred.tech"];
+    const isAdmin = Object.values(ADMIN_EMAILS).includes(currentUser?.email); //userRole === "admin";
+    
     const canPostUpdates = userRole === "manager" || userRole === "admin";
 
     const [showCalendar, setShowCalendar] = useState(false);

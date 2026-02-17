@@ -48,11 +48,9 @@ function requirePermission(action) {
  * @returns {string} Action type
  */
 function getActionFromRequest(req) {
-  const { method, path } = req;
+  const { method, path, startUrl } = req;
   
-  if (method === "POST" && path.includes("/updates")) return "CREATE_UPDATE";
-  if (method === "POST" && path.includes("/replies")) return "CREATE_REPLY";
-  if (method === "POST" && path.includes("/feedback")) return "CREATE_FEEDBACK";
+  if (method === "POST" && (path === "/" || path === "")) return startUrl?.includes("updates") ? "CREATE_UPDATE" : "UNKNOWN";
   
   return "UNKNOWN_ACTION";
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { api } from "../lib/api";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -14,64 +15,33 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            // Simulate network request
-            await new Promise(resolve => setTimeout(resolve, 800));
-
             if (!email.endsWith("@neokred.tech")) {
                 throw new Error("Only @neokred.tech emails are allowed.");
             }
 
-            let userToLogin = null;
-            let profileToLogin = null;
+            const response = await api.signin({ email, password });
 
-            // 1. Check Hardcoded Admin
-            if (email === "madhav@neokred.tech" && password === "Madhav@0123") {
-                userToLogin = {
-                    id: "admin_user",
-                    email: "madhav@neokred.tech",
+            if (response.user) {
+                // Legacy compatibility
+                const legacyProfile = {
+                    ...response.user,
+                    id: response.user.id,
+                    full_name: response.user.name,
+                    designation: response.user.department, // Map server field to client field
+                    is_approved: true
                 };
-                profileToLogin = {
-                    id: "admin_user",
-                    full_name: "Madhav",
-                    email: "madhav@neokred.tech",
-                    designation: "Administrator",
-                    role: "admin",
-                    is_approved: true,
-                };
-            } else {
-                // 2. Check Mock DB for other users
-                const existingUsersStr = localStorage.getItem("nk_all_users");
-                const existingUsers = existingUsersStr ? JSON.parse(existingUsersStr) : [];
+
+                localStorage.setItem("nk_user", JSON.stringify(response.user));
+                localStorage.setItem("nk_profile", JSON.stringify(legacyProfile));
                 
-                const foundUser = existingUsers.find(u => u.email === email);
-
-                if (foundUser) {
-                    // Simple password check (store password in plain text for this mock)
-                    if (foundUser.password === password) {
-                         userToLogin = {
-                            id: foundUser.id,
-                            email: foundUser.email,
-                        };
-                        profileToLogin = foundUser;
-                    } else {
-                        throw new Error("Invalid password.");
-                    }
-                } else {
-                    // Fallback for "legacy" users or seeded data if not in DB, 
-                    // OR throw error if we want strict DB only.
-                    // For now, let's strict check against DB OR check against the hardcoded mock logic from before as fallback?
-                    // actually let's treat the MOCK_USERS in Admin as the seed if DB is empty?
-                    // For simplicity, let's strict check.
-                     throw new Error("User not found. Please sign up.");
-                }
+                // Force reload/redirect
+                window.location.href = "/";
+            } else {
+                 throw new Error("Login failed.");
             }
-
-            localStorage.setItem("nk_user", JSON.stringify(userToLogin));
-            localStorage.setItem("nk_profile", JSON.stringify(profileToLogin));
-
-            navigate("/", { replace: true });
         } catch (err) {
-            setError(err.message || "An unexpected error occurred. Please try again.");
+            console.error(err);
+            setError(err.message || "Invalid credentials. Please try again.");
             setLoading(false);
         }
     };

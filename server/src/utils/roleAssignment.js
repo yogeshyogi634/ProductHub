@@ -10,25 +10,36 @@ const MANAGEMENT_EMAILS = [
   "operations@neokred.tech"
 ];
 
+// Publicly available departments for selection/validation
+const PUBLIC_DEPARTMENTS = [
+  "Product Manager",
+  "Engineer",
+  "Designer", 
+  "QA",
+  "Finance",
+  "HR",
+  "Marketing",
+  "Other"
+];
+
 // Department-based role mapping
 const DEPARTMENT_ROLE_MAP = {
-  "Engineering": "MANAGEMENT",
-  "Product": "MANAGEMENT", 
-  "Design": "MANAGEMENT",
+  // Public mappings
+  "Product Manager": "MANAGEMENT",
+  "Engineer": "MANAGEMENT",
+  "Designer": "MANAGEMENT", 
   "QA": "MANAGEMENT",
-  "DevOps": "MANAGEMENT",
-  "CTO Office": "ADMIN",
+  "Finance": "EMPLOYEE",
+  "HR": "MANAGEMENT",
+  "Marketing": "EMPLOYEE",
+  "Other": "EMPLOYEE",
+  
+  // Legacy/Internal mappings (keeping for existing records/admins)
+  "ADMIN": "ADMIN",
   "CEO Office": "ADMIN",
   "Management": "MANAGEMENT",
   "Leadership": "ADMIN",
   "Admin": "ADMIN",
-  "HR": "MANAGEMENT",
-  "Operations": "MANAGEMENT",
-  "Marketing": "EMPLOYEE",
-  "Sales": "EMPLOYEE",
-  "Finance": "EMPLOYEE",
-  "Legal": "EMPLOYEE",
-  "Support": "EMPLOYEE"
 };
 
 /**
@@ -75,10 +86,10 @@ function hasPermission(userRole, action) {
 
 /**
  * Get all available departments
- * @returns {Array} List of available departments
+ * @returns {Array} List of available public departments
  */
 function getAvailableDepartments() {
-  return Object.keys(DEPARTMENT_ROLE_MAP).sort();
+  return PUBLIC_DEPARTMENTS.sort();
 }
 
 /**

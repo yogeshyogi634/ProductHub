@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { api } from "../lib/api";
 
 const DESIGNATIONS = [
     "Product Manager",
@@ -55,31 +56,17 @@ export default function SignupPage() {
         setLoading(true);
 
         try {
-            // Simulate check for existing user before sending OTP
-            await new Promise(resolve => setTimeout(resolve, 600));
-
-            const existingUsersStr = localStorage.getItem("nk_all_users");
-            const existingUsers = existingUsersStr ? JSON.parse(existingUsersStr) : [];
-
-            if (existingUsers.some(u => u.email === email)) {
-                setError("User with this email already exists.");
-                setLoading(false);
-                return;
-            }
-
-            // Generate Mock OTP
-            const mockOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            setGeneratedOtp(mockOtp);
+            await api.requestOtp({
+                name: fullName,
+                email,
+                department: designation
+            });
             
-            // Alert user with Mock OTP
-            console.log("Mock OTP:", mockOtp);
-            alert(`Your Verification Code is: ${mockOtp}`);
-
             setStep("otp");
             setLoading(false);
         } catch (err) {
             console.error(err);
-            setError("Failed to send verification code.");
+            setError(err.message || "Failed to send verification code.");
             setLoading(false);
         }
     };
@@ -96,48 +83,37 @@ export default function SignupPage() {
         setLoading(true);
 
         try {
-            // Simulate verification
-            await new Promise(resolve => setTimeout(resolve, 800));
+            const response = await api.signup({
+                name: fullName,
+                email,
+                password,
+                department: designation,
+                otp
+            });
 
-            if (otp !== generatedOtp && otp !== "123456") {
-                 throw new Error("Invalid verification code.");
+            // Set user in local storage (for now, eventually replace with Context/Global State)
+            // Note: Token is set in cookie by server
+            if (response.user) {
+                // Legacy compatibility for AuthGuard
+                const legacyProfile = {
+                    ...response.user,
+                    id: response.user.id,
+                    full_name: response.user.name,
+                    designation: response.user.department,
+                    is_approved: true // Auto-approved via OTP
+                };
+                
+                localStorage.setItem("nk_user", JSON.stringify(response.user));
+                localStorage.setItem("nk_profile", JSON.stringify(legacyProfile));
+                
+                 // Force reload/redirect to ensure state updates
+                window.location.href = "/";
+            } else {
+                navigate("/", { replace: true });
             }
-
-            // User Creation Logic (Moved from original handleSubmit)
-            const existingUsersStr = localStorage.getItem("nk_all_users");
-            const existingUsers = existingUsersStr ? JSON.parse(existingUsersStr) : [];
-            
-            // Double check existence just in case
-            if (existingUsers.some(u => u.email === email)) {
-                 throw new Error("User with this email already exists.");
-            }
-            
-            const mockUser = {
-                id: `user_${Date.now()}`,
-                email: email,
-            };
-
-            const mockProfile = {
-                id: mockUser.id,
-                full_name: fullName,
-                email: email,
-                designation: designation,
-                role: "employee",
-                is_approved: false,
-                password: password,
-                created_at: new Date().toISOString(),
-            };
-
-            const updatedUsers = [...existingUsers, mockProfile];
-            localStorage.setItem("nk_all_users", JSON.stringify(updatedUsers));
-
-            localStorage.setItem("nk_user", JSON.stringify(mockUser));
-            localStorage.setItem("nk_profile", JSON.stringify(mockProfile));
-
-            navigate("/pending-approval", { replace: true });
         } catch (err) {
             console.error(err);
-            setError(err.message || "An unexpected error occurred. Please try again.");
+            setError(err.message || "Verification failed. Please try again.");
             setLoading(false);
         }
     };

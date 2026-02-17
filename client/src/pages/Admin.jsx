@@ -1,35 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { api } from "../lib/api";
 
 const ADMIN_EMAIL = "madhav@neokred.tech";
 
 const ROLE_OPTIONS = [
-    { value: "employee", label: "Employee", color: "bg-blue-500/15 text-blue-300 border-blue-500/30" },
-    { value: "manager", label: "Manager", color: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
-    { value: "admin", label: "Admin", color: "bg-brand-primary/15 text-brand-primary border-brand-primary/30" },
-];
-
-const SEED_USERS = [
-    {
-        id: "user_1",
-        full_name: "Madhav",
-        email: "madhav@neokred.tech",
-        designation: "Product Manager",
-        role: "admin",
-        is_approved: true,
-        password: "password", 
-        created_at: new Date().toISOString(),
-    },
-    {
-        id: "user_2",
-        full_name: "Yogesh",
-        email: "yogesh@neokred.tech",
-        designation: "Engineer",
-        role: "employee",
-        is_approved: true,
-        password: "password",
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-    }
+    { value: "EMPLOYEE", label: "Employee", color: "bg-blue-500/15 text-blue-300 border-blue-500/30" },
+    { value: "MANAGEMENT", label: "Manager", color: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
+    { value: "ADMIN", label: "Admin", color: "bg-brand-primary/15 text-brand-primary border-brand-primary/30" },
 ];
 
 export default function AdminPage() {
@@ -37,31 +15,76 @@ export default function AdminPage() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [logs, setLogs] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null); // Store current user to prevent self-actions
     const [actionLoading, setActionLoading] = useState({});
-    const [tab, setTab] = useState("pending"); // pending | all
+    const [tab, setTab] = useState("pending"); // pending | all | logs
 
     useEffect(() => {
         checkAdminAccess();
+        fetchDepartments();
     }, []);
+
+    useEffect(() => {
+        if (tab === "logs") {
+            fetchLogs();
+        }
+    }, [tab]);
+
+    const fetchLogs = async () => {
+        try {
+            const response = await api.getAdminLogs();
+            if (response && response.logs) {
+                setLogs(response.logs);
+            }
+        } catch (err) {
+            console.error("Failed to fetch logs:", err);
+        }
+    };
+
+    useEffect(() => {
+        checkAdminAccess();
+        fetchDepartments();
+    }, []);
+
+    const fetchDepartments = async () => {
+        try {
+            const response = await api.getDepartments();
+            if (response && Array.isArray(response)) {
+                setDepartments(response);
+            }
+        } catch (err) {
+            console.error("Failed to fetch departments:", err);
+            // Fallback default departments if API fails
+            setDepartments([
+                "Product Manager", "Engineer", "Designer", "QA", "Finance", "HR", "Marketing", "Other"
+            ]);
+        }
+    };
 
     const checkAdminAccess = async () => {
         try {
-            const storedProfile = localStorage.getItem("nk_profile");
+            const { user } = await api.getMe();
             
-            if (!storedProfile) {
-                navigate("/login", { replace: true });
-                return;
+            // STRICT ADMIN CHECK: Only specific emails are allowed to see/access Admin Panel
+            const ADMIN_EMAILS = ["madhav@neokred.tech", "admin@neokred.tech", "ceo@neokred.tech"];
+            
+            const isMasterAdmin = user.email === "madhav@neokred.tech";
+
+            // Check both Role AND Email match. Case-insensitive role check.
+            // MASTER OVERRIDE: madhav@neokred.tech is always allowed, regardless of role
+            if (!isMasterAdmin) {
+                if (!user || user.role?.toUpperCase() !== "ADMIN" || !Object.values(ADMIN_EMAILS).includes(user.email)) {
+                    console.log("Access denied. Role:", user?.role, "Email:", user?.email);
+                    navigate("/", { replace: true });
+                    return;
+                }
             }
 
-            const profile = JSON.parse(storedProfile);
-
-            if (profile.role !== "admin") {
-                navigate("/", { replace: true });
-                return;
-            }
-
+            setCurrentUser(user);
             setIsAdmin(true);
-            await fetchUsers(); // Simulate fetch
+            await fetchUsers();
             setLoading(false);
         } catch (err) {
             console.error("Admin check failed:", err);
@@ -70,50 +93,46 @@ export default function AdminPage() {
     };
 
     const fetchUsers = async () => {
-        // Simulate fetch
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        const existingUsersStr = localStorage.getItem("nk_all_users");
-        if (!existingUsersStr) {
-            // Seed if empty
-            localStorage.setItem("nk_all_users", JSON.stringify(SEED_USERS));
-            setUsers(SEED_USERS);
-        } else {
-            setUsers(JSON.parse(existingUsersStr));
+        try {
+            const response = await api.getUsers();
+            if (response.users) {
+                // Map API response to match existing UI structure if needed
+                // API: { id, name, email, role, department, createdAt... }
+                setUsers(response.users);
+            }
+        } catch (err) {
+            console.error("Failed to fetch users:", err);
         }
     };
 
-    const saveUsers = (newUsers) => {
-        localStorage.setItem("nk_all_users", JSON.stringify(newUsers));
-        setUsers(newUsers);
-         // If we modify the current logged-in user, we should update session too? 
-         // For now, let's assume admin doesn't demote themselves to lose access immediately without refresh.
-    };
-
-    const approveUser = async (userId, role = "employee") => {
+    const approveUser = async (userId, role) => {
         setActionLoading((prev) => ({ ...prev, [userId]: true }));
         try {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Default to EMPLOYEE if no role passed, though UI should provide one
+            const targetRole = role || "EMPLOYEE";
+            await api.updateUser(userId, { isVerified: true, role: targetRole });
             
-            const updatedUsers = users.map(u => 
-                u.id === userId ? { ...u, is_approved: true, role } : u
-            );
-            saveUsers(updatedUsers);
-            
+            setUsers(prev => prev.map(u => 
+                u.id === userId ? { ...u, isVerified: true, role: targetRole } : u
+            ));
         } catch (err) {
             console.error("Approve failed:", err);
+            // Log full error details for debugging
+            alert(`Failed to approve user: ${err.message || err.toString()}`);
         }
         setActionLoading((prev) => ({ ...prev, [userId]: false }));
     };
 
     const rejectUser = async (userId) => {
+        if (!confirm("Are you sure you want to remove this user? This action cannot be undone.")) return;
+        
         setActionLoading((prev) => ({ ...prev, [userId]: true }));
         try {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            const updatedUsers = users.filter(u => u.id !== userId);
-            saveUsers(updatedUsers);
+            await api.deleteUser(userId);
+            setUsers(prev => prev.filter(u => u.id !== userId));
         } catch (err) {
             console.error("Reject failed:", err);
+            alert("Failed to delete user.");
         }
         setActionLoading((prev) => ({ ...prev, [userId]: false }));
     };
@@ -121,19 +140,19 @@ export default function AdminPage() {
     const updateUserRole = async (userId, newRole) => {
         setActionLoading((prev) => ({ ...prev, [userId]: true }));
         try {
-             await new Promise(resolve => setTimeout(resolve, 500));
-             const updatedUsers = users.map(u => 
+             await api.updateUser(userId, { role: newRole });
+             setUsers(prev => prev.map(u => 
                 u.id === userId ? { ...u, role: newRole } : u
-            );
-            saveUsers(updatedUsers);
+            ));
         } catch (err) {
             console.error("Role update failed:", err);
+            alert(`Failed to update role: ${err.message || err.toString()}`);
         }
         setActionLoading((prev) => ({ ...prev, [userId]: false }));
     };
 
-    const pendingUsers = users.filter((u) => !u.is_approved);
-    const allUsers = users.filter((u) => u.is_approved);
+    const pendingUsers = users.filter((u) => !u.isVerified); // Using isVerified from API
+    const allUsers = users.filter((u) => u.isVerified);
 
     if (loading) {
         return (
@@ -224,6 +243,15 @@ export default function AdminPage() {
                     >
                         All Users
                     </button>
+                    <button
+                        onClick={() => setTab("logs")}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "logs"
+                            ? "bg-brand-primary text-black shadow-sm"
+                            : "text-text-default-secondary hover:text-text-default-primary"
+                            }`}
+                    >
+                        Activity Logs
+                    </button>
                 </div>
 
                 {/* Pending Approvals Tab */}
@@ -270,10 +298,74 @@ export default function AdminPage() {
                                         <UserRow
                                             key={user.id}
                                             user={user}
+                                            isSelf={currentUser?.id === user.id}
                                             loading={actionLoading[user.id]}
                                             onRoleChange={(role) => updateUserRole(user.id, role)}
                                             onRemove={() => rejectUser(user.id)}
                                         />
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Logs Tab */}
+                {tab === "logs" && (
+                    <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl overflow-hidden">
+                        <table className="w-full">
+                            <thead>
+                                <tr className="border-b border-stroke-default-primary">
+                                    <th className="text-left px-6 py-3 text-xs font-medium text-text-default-secondary uppercase tracking-wider">Time</th>
+                                    <th className="text-left px-6 py-3 text-xs font-medium text-text-default-secondary uppercase tracking-wider">Admin</th>
+                                    <th className="text-left px-6 py-3 text-xs font-medium text-text-default-secondary uppercase tracking-wider">Action</th>
+                                    <th className="text-left px-6 py-3 text-xs font-medium text-text-default-secondary uppercase tracking-wider">Target User</th>
+                                    <th className="text-left px-6 py-3 text-xs font-medium text-text-default-secondary uppercase tracking-wider">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-stroke-default-primary">
+                                {logs.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={5} className="px-6 py-12 text-center text-text-default-secondary text-sm">
+                                            No activity recorded yet
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    logs.map((log) => (
+                                        <tr key={log.id} className="hover:bg-background-card-secondary/50 transition-colors">
+                                            <td className="px-6 py-4 whitespace-nowrap text-xs text-text-default-secondary">
+                                                {new Date(log.createdAt).toLocaleString()}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-text-default-primary font-medium">
+                                                {log.adminUser?.name || "Unknown"}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                                    log.action === "APPROVE" ? "bg-green-500/10 text-green-400" :
+                                                    log.action === "REJECT" ? "bg-red-500/10 text-red-400" :
+                                                    log.action === "REMOVE" ? "bg-red-500/10 text-red-400" :
+                                                    "bg-blue-500/10 text-blue-400"
+                                                }`}>
+                                                    {log.action}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-text-default-secondary">
+                                                {log.targetUser ? (
+                                                    <div>
+                                                        <p className="text-text-default-primary">{log.targetUser.name}</p>
+                                                        <p className="text-xs">{log.targetUser.email}</p>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <p className="text-text-default-primary">{log.targetName || "Deleted User"}</p>
+                                                        <p className="text-xs">{log.targetEmail || "No email"}</p>
+                                                    </div>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-text-default-secondary">
+                                                {log.details}
+                                            </td>
+                                        </tr>
                                     ))
                                 )}
                             </tbody>
@@ -314,7 +406,7 @@ function EmptyState({ message, description }) {
 }
 
 function PendingUserCard({ user, loading, onApprove, onReject }) {
-    const [selectedRole, setSelectedRole] = useState("employee");
+    const [selectedRole, setSelectedRole] = useState("EMPLOYEE");
 
     return (
         <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl p-5 flex items-center justify-between gap-4">
@@ -392,7 +484,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
     );
 }
 
-function UserRow({ user, loading, onRoleChange, onRemove }) {
+function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
     const currentRole = ROLE_OPTIONS.find((r) => r.value === user.role) || ROLE_OPTIONS[0];
     const isAdmin = user.email === ADMIN_EMAIL;
     const [confirmRemove, setConfirmRemove] = useState(false);
@@ -404,25 +496,28 @@ function UserRow({ user, loading, onRoleChange, onRemove }) {
     };
 
     return (
-        <tr className="hover:bg-background-card-secondary/50 transition-colors">
+        <tr className={`hover:bg-background-card-secondary/50 transition-colors ${isSelf ? 'bg-brand-primary/5' : ''}`}>
             <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center flex-shrink-0">
                         <span className="text-brand-primary font-semibold text-xs">
-                            {user.full_name?.charAt(0)?.toUpperCase() || "?"}
+                            {user.name?.charAt(0)?.toUpperCase() || "?"}
                         </span>
                     </div>
                     <div>
-                        <p className="text-text-default-primary text-sm font-medium">{user.full_name}</p>
+                        <div className="flex items-center gap-2">
+                            <p className="text-text-default-primary text-sm font-medium">{user.name}</p>
+                            {isSelf && <span className="text-[10px] bg-brand-primary/20 text-brand-primary px-1.5 rounded">YOU</span>}
+                        </div>
                         <p className="text-text-default-secondary text-xs">{user.email}</p>
                     </div>
                 </div>
             </td>
             <td className="px-6 py-4">
-                <span className="text-text-default-secondary text-sm">{user.designation || "—"}</span>
+                <span className="text-text-default-secondary text-sm">{user.department || "—"}</span>
             </td>
             <td className="px-6 py-4">
-                {isAdmin ? (
+                {isAdmin || isSelf ? (
                     <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium border ${currentRole.color}`}>
                         {currentRole.label}
                     </span>
@@ -445,7 +540,7 @@ function UserRow({ user, loading, onRoleChange, onRemove }) {
                 <span className="text-text-default-secondary text-xs">{formatDate(user.created_at)}</span>
             </td>
             <td className="px-6 py-4 text-right">
-                {!isAdmin && (
+                {!isAdmin && !isSelf && (
                     confirmRemove ? (
                         <div className="flex items-center justify-end gap-2">
                             <span className="text-xs text-red-300">Remove?</span>

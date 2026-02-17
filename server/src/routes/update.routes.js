@@ -1,7 +1,6 @@
 import express from "express";
 const router = express.Router();
-import { protect } from "../middleware/auth.middleware.js";
-import { requireManagement } from "../middleware/roleAuth.middleware.js";
+import { protect, restrictTo } from "../middleware/auth.middleware.js";
 import {
   getUpdates,
   getUpdateById,
@@ -17,9 +16,9 @@ router.get("/statuses", protect, getStatuses);
 router.get("/", protect, getUpdates);
 router.get("/:id", protect, getUpdateById);
 router.get("/:id/history", protect, getStatusHistory);
-router.post("/", protect, requireManagement, createUpdate);
-router.put("/:id", protect, editUpdate);
-router.patch("/:id/status", protect, changeStatus);
-router.delete("/:id", protect, deleteUpdate);
+router.post("/", protect, restrictTo("ADMIN", "MANAGEMENT"), createUpdate);
+router.put("/:id", protect, restrictTo("ADMIN", "MANAGEMENT"), editUpdate);
+router.patch("/:id/status", protect, restrictTo("ADMIN", "MANAGEMENT"), changeStatus);
+router.delete("/:id", protect, restrictTo("ADMIN", "MANAGEMENT"), deleteUpdate);
 
 export default router;

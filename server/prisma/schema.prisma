@@ -12,6 +12,7 @@ model User {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   email        String   @unique
   name         String?
+  password     String? // Hashed password
   department   String?
   avatarUrl    String?
   role         Role     @default(EMPLOYEE)
@@ -25,6 +26,10 @@ model User {
   replies       Reply[]
   otps          OTP[]
   statusHistory UpdateStatusHistory[]
+
+  // Admin Logs
+  logsTargeted  AdminLog[] @relation("TargetUser")
+  logsCreated   AdminLog[] @relation("AdminUser")
 }
 
 enum Role {
@@ -147,7 +152,33 @@ model OTP {
   isUsed    Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([email, isUsed, expiresAt])
+}
+
+// ─── Admin Activity Logs ───
+model AdminLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  action      String   // "APPROVE", "REJECT", "REMOVE", "ROLE_CHANGE"
+  targetId    String?  @db.ObjectId
+  targetName  String?  // Snapshot of name in case user is deleted
+  targetEmail String?  // Snapshot of email in case user is deleted
+  adminId     String?  @db.ObjectId
+  details     String?  // e.g., "Role changed from EMPLOYEE to MANAGER"
+  createdAt   DateTime @default(now())
+  
+  // Set null on delete, or cascade if you want to lose history
+  // For audit logs, usually we keep history even if user is deleted, 
+  // but Prisma requires relation existence unless optional.
+  // Best practice: Make relation optional OR use onDelete: SetNull (if field nullable) 
+  // OR keep the log but make the relation disconnected?
+  // Prisma/Mongo doesn't support SetNull on list relations easily sometimes.
+  // Given user wants to "remove" user, let's keep logs but maybe make the relation optional?
+  // Actually, for simplicity and ensuring deletion works now:
+  
+  targetUser  User?    @relation("TargetUser", fields: [targetId], references: [id], onDelete: SetNull)
+  adminUser   User?    @relation("AdminUser", fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
 }
