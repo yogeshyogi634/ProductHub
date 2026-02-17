@@ -60,6 +60,8 @@ export function StoreProvider({ children }) {
     const signOut = useCallback(async () => {
         localStorage.removeItem("nk_user");
         localStorage.removeItem("nk_profile");
+        setAuthUserState(null);
+        authUserSet.current = false;
         navigate("/login", { replace: true });
     }, [navigate]);
 
