@@ -1,6 +1,5 @@
 // Hardcoded management email addresses (fallback)
 const MANAGEMENT_EMAILS = [
-  "ceo@neokred.tech",
   "cto@neokred.tech", 
   "manager1@neokred.tech",
   "manager2@neokred.tech",
@@ -43,28 +42,21 @@ const DEPARTMENT_ROLE_MAP = {
 };
 
 /**
- * Assign role based on email and department
+ * Assign role based on email and department (for initial user creation only)
+ * NOTE: Once a user exists in the database, their role should be read from the database,
+ * not recalculated using this function.
  * @param {string} email - User's email address
  * @param {string} department - User's department (optional)
  * @returns {string} Role - "ADMIN", "MANAGEMENT", or "EMPLOYEE"
  */
 function assignRole(email, department = null) {
   // Admin has full access (specific admin emails)
-  if (email === "admin@neokred.tech" || email === "ceo@neokred.tech") {
+  if (email === "madhav@neokred.tech") {
     return "ADMIN";
   }
   
-  // Department-based role assignment (primary method)
-  if (department && DEPARTMENT_ROLE_MAP[department]) {
-    return DEPARTMENT_ROLE_MAP[department];
-  }
-  
-  // Fallback to email-based assignment for existing users
-  if (MANAGEMENT_EMAILS.includes(email)) {
-    return "MANAGEMENT";
-  }
-  
-  // Default role for all other verified domain users
+  // For all other users, default to EMPLOYEE
+  // Admin will assign roles through the admin panel
   return "EMPLOYEE";
 }
 

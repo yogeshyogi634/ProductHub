@@ -17,7 +17,7 @@ let MOCK_UPDATES = [
         description: "Updated interest rates for Q3.",
         status: "Live",
         department: "Finance",
-        author_email: "admin@neokred.tech",
+        author_email: "madhav@neokred.tech",
         created_at: new Date().toISOString(),
         update_status_log: [],
     },

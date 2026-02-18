@@ -28,6 +28,7 @@ export default function LoginPage() {
                     id: response.user.id,
                     full_name: response.user.name,
                     designation: response.user.department, // Map server field to client field
+                    role: response.user.role, // Include role
                     is_approved: true
                 };
 

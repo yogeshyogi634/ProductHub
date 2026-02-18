@@ -65,7 +65,7 @@ async function signup(req, res, next) {
 
         // 5. Create User
         // Auto-verify only if it's the specific admin email
-        const shouldAutoVerify = normalizedEmail === "madhav@neokred.tech" || normalizedEmail === "admin@neokred.tech" || normalizedEmail === "ceo@neokred.tech";
+        const shouldAutoVerify = normalizedEmail === "madhav@neokred.tech";
 
         const user = await prisma.user.create({
             data: {
@@ -95,7 +95,7 @@ async function signup(req, res, next) {
                 id: user.id,
                 email: user.email,
                 name: user.name,
-                // role: user.role, // Removed as requested
+                role: user.role,
                 department: user.department
             },
             token
@@ -176,7 +176,7 @@ async function signin(req, res, next) {
                     id: user.id,
                     email: user.email,
                     name: user.name,
-                    // role: user.role, 
+                    role: user.role,
                     department: user.department,
                     avatarUrl: user.avatarUrl
                 },
@@ -227,7 +227,7 @@ async function signin(req, res, next) {
                 id: user.id,
                 email: user.email,
                 name: user.name,
-                // role: user.role, // Removed as requested
+                role: user.role,
                 department: user.department,
                 avatarUrl: user.avatarUrl
             },
@@ -320,6 +320,7 @@ async function devLogin(req, res, next) {
           email,
           name: email.split("@")[0],
           role: assignRole(email),
+          department: "Engineering",
           isVerified: true
         },
       });
@@ -340,7 +341,7 @@ async function devLogin(req, res, next) {
         email: user.email,
         name: user.name,
         avatarUrl: user.avatarUrl,
-        // role: user.role, // Removed as requested
+        role: user.role,
       },
       token,
     });
@@ -367,24 +368,19 @@ async function updateUser(req, res, next) {
         if (department) {
              console.log(`[UpdateUser] Changing department for ${id} to ${department}`);
              const availableDepartments = getAvailableDepartments();
-             if (!availableDepartments.includes(department)) {
+             if (!availableDepartments.includes(department) && department !== "ADMIN") {
                  return error(res, `Invalid department. Available departments: ${availableDepartments.join(', ')}`, 400);
              }
-             
-             // If department is changing, recalculate the role
-             // We need the user's email to properly assign the role (in case of specific overrides)
-             const currentUser = await prisma.user.findUnique({
-                 where: { id },
-                 select: { email: true }
-             });
-             
-             if (currentUser) {
-                 // Auto-assign role based on new department
-                 // Note: we are overriding any manually provided 'role' in the body if department is present
-                 const newRole = assignRole(currentUser.email, department);
-                 console.log(`[UpdateUser] Auto-assigning role ${newRole} based on department`);
-                 req.body.role = newRole;
-             }
+        }
+        
+        // Validation for role
+        if (role) {
+            const validRoles = ["ADMIN", "MANAGEMENT", "EMPLOYEE"];
+            if (!validRoles.includes(role.toUpperCase())) {
+                return error(res, `Invalid role. Valid roles: ${validRoles.join(', ')}`, 400);
+            }
+            // Normalize role to uppercase
+            req.body.role = role.toUpperCase();
         }
         
         console.log(`[UpdateUser] Updating user ${id} with data:`, { role: req.body.role, department, isVerified });

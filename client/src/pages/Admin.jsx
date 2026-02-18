@@ -68,7 +68,7 @@ export default function AdminPage() {
             const { user } = await api.getMe();
             
             // STRICT ADMIN CHECK: Only specific emails are allowed to see/access Admin Panel
-            const ADMIN_EMAILS = ["madhav@neokred.tech", "admin@neokred.tech", "ceo@neokred.tech"];
+            const ADMIN_EMAILS = ["madhav@neokred.tech"];
             
             const isMasterAdmin = user.email === "madhav@neokred.tech";
 

@@ -53,25 +53,8 @@ async function main() {
     console.log(`  ✅ Product: ${product.name}`);
   }
 
-  // ─── Create a test admin user ───
-  const adminUser = await prisma.user.upsert({
-    where: { email: "admin@neokred.tech" },
-    update: {},
-    create: {
-      email: "admin@neokred.tech",
-      name: "Admin",
-      role: "ADMIN",
-    },
-  });
-  console.log(`  ✅ Admin user: ${adminUser.email}`);
-
   // ─── Create management users ───
   const managementUsers = [
-    {
-      email: "ceo@neokred.tech",
-      name: "CEO",
-      role: "MANAGEMENT",
-    },
     {
       email: "cto@neokred.tech", 
       name: "CTO",

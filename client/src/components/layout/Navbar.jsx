@@ -21,13 +21,15 @@ export function Navbar() {
         authUser,
     } = useStore();
 
-    const userRole = authUser?.role || "employee";
+    const userRole = (authUser?.role || "EMPLOYEE").toUpperCase();
     
     // STRICT ADMIN CHECK: Only specific emails are allowed to see/access Admin Panel
-    const ADMIN_EMAILS = ["madhav@neokred.tech", "admin@neokred.tech", "ceo@neokred.tech"];
-    const isAdmin = Object.values(ADMIN_EMAILS).includes(currentUser?.email); //userRole === "admin";
+    const ADMIN_EMAILS = ["madhav@neokred.tech"];
+    const isAdmin = ADMIN_EMAILS.includes(currentUser?.email);
     
-    const canPostUpdates = userRole === "manager" || userRole === "admin";
+    // Can post updates if: MANAGEMENT role, ADMIN role, or admin user
+    // userRole comes from the database (assigned by admin in the Admin Panel)
+    const canPostUpdates = userRole === "MANAGEMENT" || userRole === "ADMIN" || isAdmin;
 
     const [showCalendar, setShowCalendar] = useState(false);
     const calendarRef = useRef(null);
@@ -162,6 +164,7 @@ export function Navbar() {
                             Admin
                         </Link>
                     )}
+
 
                     <span className="text-text-default-secondary text-sm">
                         {currentUser?.email || "user@neokred.tech"}

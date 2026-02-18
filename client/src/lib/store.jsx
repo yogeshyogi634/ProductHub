@@ -48,13 +48,14 @@ export function StoreProvider({ children }) {
         authUserSet.current = true;
         setAuthUserState({
             email: profile?.email || user?.email || CURRENT_USER.email,
-            name: profile?.full_name || CURRENT_USER.name,
+            name: profile?.full_name || user?.name || CURRENT_USER.name,
             designation: profile?.designation || "",
-            role: profile?.role || "employee",
+            role: profile?.role || user?.role || "employee",
         });
     }, []);
 
     const currentUser = authUser || CURRENT_USER;
+
 
     // Sign out
     const signOut = useCallback(async () => {
@@ -96,6 +97,7 @@ export function StoreProvider({ children }) {
                 document.documentElement.classList.add("dark");
             }
         } catch (_) { }
+
     }, [loadProductData]);
 
     const setActiveProduct = useCallback(
