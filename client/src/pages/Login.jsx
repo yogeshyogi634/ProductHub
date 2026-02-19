@@ -1,17 +1,32 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { api } from "../lib/api";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        // Check for success message from signup
+        if (location.state?.message) {
+            setSuccess(location.state.message);
+            if (location.state?.email) {
+                setEmail(location.state.email);
+            }
+            // Clear the state
+            navigate(location.pathname, { replace: true, state: null });
+        }
+    }, [location, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setSuccess("");
         setLoading(true);
 
         try {
@@ -20,16 +35,29 @@ export default function LoginPage() {
             }
 
             const response = await api.signin({ email, password });
+            console.log("FULL LOGIN RESPONSE:", JSON.stringify(response, null, 2));
 
             if (response.user) {
-                // Legacy compatibility
+                console.log("User Verified Status:", response.user.isVerified);
+                // Check if user is verified/approved
+                if (!response.user.isVerified && response.user.role !== "ADMIN") {
+                    // Store user info temporarily for the pending approval page
+                    localStorage.setItem("nk_pending_user", JSON.stringify({
+                        email: response.user.email,
+                        name: response.user.name
+                    }));
+                    navigate("/pending-approval", { replace: true });
+                    return;
+                }
+
+                // Legacy compatibility for approved users
                 const legacyProfile = {
                     ...response.user,
                     id: response.user.id,
                     full_name: response.user.name,
                     designation: response.user.department, // Map server field to client field
                     role: response.user.role, // Include role
-                    is_approved: true
+                    is_approved: response.user.isVerified
                 };
 
                 localStorage.setItem("nk_user", JSON.stringify(response.user));
@@ -46,6 +74,7 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="min-h-screen w-screen flex items-center justify-center bg-background-app px-4">
@@ -65,6 +94,13 @@ export default function LoginPage() {
                 {/* Card */}
                 <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl p-8 shadow-sm">
                     <form onSubmit={handleSubmit} className="space-y-5">
+                        {/* Success */}
+                        {success && (
+                            <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg text-sm">
+                                {success}
+                            </div>
+                        )}
+
                         {/* Error */}
                         {error && (
                             <div className="bg-background-actions-error/10 border border-background-actions-error/30 text-background-actions-error px-4 py-3 rounded-lg text-sm">
@@ -126,11 +162,12 @@ export default function LoginPage() {
                                     </svg>
                                     Signing in…
                                 </span>
-                            ) : (
-                                "Sign In"
-                            )}
+                                ) : (
+                                    "Sign In"
+                                )}
                         </button>
                     </form>
+
 
                     {/* Divider */}
                     <div className="mt-6 pt-6 border-t border-stroke-default-primary text-center">

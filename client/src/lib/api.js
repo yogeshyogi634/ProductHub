@@ -43,6 +43,11 @@ export const api = {
         body: JSON.stringify(data) 
     }),
     
+    verifyOtp: (data) => request("/auth/verify-otp", { 
+        method: "POST", 
+        body: JSON.stringify(data) 
+    }),
+    
     signup: (data) => request("/auth/signup", { 
         method: "POST", 
         body: JSON.stringify(data) 

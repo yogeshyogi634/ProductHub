@@ -212,7 +212,7 @@ export default function AdminPage() {
                     />
                     <StatCard
                         label="Managers"
-                        value={allUsers.filter((u) => u.role === "manager" || u.role === "admin").length}
+                        value={allUsers.filter((u) => u.role === "MANAGEMENT" || u.role === "ADMIN").length}
                         color="text-purple-400"
                         bgColor="bg-purple-500/10"
                     />
@@ -414,7 +414,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center flex-shrink-0">
                     <span className="text-brand-primary font-semibold text-sm">
-                        {user.full_name?.charAt(0)?.toUpperCase() || "?"}
+                        {user.name?.charAt(0)?.toUpperCase() || "?"}
                     </span>
                 </div>
 
@@ -422,14 +422,14 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                         <p className="text-text-default-primary font-medium truncate">
-                            {user.full_name}
+                            {user.name}
                         </p>
                         <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/15 text-yellow-300 border border-yellow-500/30 flex-shrink-0">
                             Pending
                         </span>
                     </div>
                     <p className="text-text-default-secondary text-sm truncate">{user.email}</p>
-                    <p className="text-text-default-secondary text-xs mt-0.5">{user.designation}</p>
+                    <p className="text-text-default-secondary text-xs mt-0.5">{user.department}</p>
                 </div>
             </div>
 
@@ -537,7 +537,7 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                 )}
             </td>
             <td className="px-6 py-4">
-                <span className="text-text-default-secondary text-xs">{formatDate(user.created_at)}</span>
+                <span className="text-text-default-secondary text-xs">{formatDate(user.createdAt)}</span>
             </td>
             <td className="px-6 py-4 text-right">
                 {!isAdmin && !isSelf && (

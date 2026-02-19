@@ -62,8 +62,8 @@ class EmailService {
     };
 
     try {
-      if (process.env.NODE_ENV === 'development') {
-        // In development, just log the OTP instead of sending email
+      // Always use console logging for OTP in development or if NODE_ENV is not production
+      if (process.env.NODE_ENV !== 'production') {
         console.log('🔐 OTP Email (Development Mode)');
         console.log(`To: ${email}`);
         console.log(`Name: ${name}`);
@@ -76,6 +76,15 @@ class EmailService {
       return { success: true, messageId: info.messageId };
     } catch (error) {
       console.error('Email sending failed:', error);
+      // In development, still return success and log the OTP
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('🔐 OTP Email (Fallback - Email failed but logging OTP)');
+        console.log(`To: ${email}`);
+        console.log(`Name: ${name}`);
+        console.log(`OTP Code: ${otpCode}`);
+        console.log('---');
+        return { success: true, messageId: 'dev-fallback' };
+      }
       return { success: false, error: error.message };
     }
   }

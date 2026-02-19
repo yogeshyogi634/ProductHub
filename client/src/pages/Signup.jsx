@@ -91,26 +91,15 @@ export default function SignupPage() {
                 otp
             });
 
-            // Set user in local storage (for now, eventually replace with Context/Global State)
-            // Note: Token is set in cookie by server
-            if (response.user) {
-                // Legacy compatibility for AuthGuard
-                const legacyProfile = {
-                    ...response.user,
-                    id: response.user.id,
-                    full_name: response.user.name,
-                    designation: response.user.department,
-                    is_approved: true // Auto-approved via OTP
-                };
-                
-                localStorage.setItem("nk_user", JSON.stringify(response.user));
-                localStorage.setItem("nk_profile", JSON.stringify(legacyProfile));
-                
-                 // Force reload/redirect to ensure state updates
-                window.location.href = "/";
-            } else {
-                navigate("/", { replace: true });
-            }
+            // Redirect to signin page after successful signup
+            // Do not set user in localStorage - they need to sign in
+            navigate("/login", { 
+                replace: true, 
+                state: { 
+                    message: "Account created successfully! Please sign in to continue.", 
+                    email: email 
+                } 
+            });
         } catch (err) {
             console.error(err);
             setError(err.message || "Verification failed. Please try again.");

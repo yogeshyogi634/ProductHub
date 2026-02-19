@@ -17,9 +17,12 @@ export default function AuthGuard({ children }) {
                 }
 
                 const parsedProfile = JSON.parse(storedProfile);
-
+                
                 // Check if user is approved
-                if (!parsedProfile.is_approved) {
+                // Handle both is_approved (legacy) and isVerified (new schema)
+                const isApproved = parsedProfile.is_approved !== undefined ? parsedProfile.is_approved : parsedProfile.isVerified;
+                
+                if (!isApproved) {
                     navigate("/pending-approval", { replace: true });
                     return;
                 }

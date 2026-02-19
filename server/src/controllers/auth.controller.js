@@ -1,3 +1,4 @@
+console.log("🔥 AUTH CONTROLLER LOADED - NEW VERSION 🔥");
 import prisma from "../utils/prisma.js";
 import { signToken } from "../utils/jwt.js";
 import { success, error } from "../utils/response.js";
@@ -78,27 +79,43 @@ async function signup(req, res, next) {
             }
         });
         
-        // 6. Generate Token
-        const token = signToken(user);
+        // Don't auto-login users who need approval
+        if (shouldAutoVerify) {
+            // 6. Generate Token (only for admin)
+            const token = signToken(user);
 
-        // 7. Set Cookie
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+            // 7. Set Cookie (only for admin)
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+
+            return success(res, {
+                message: "Admin user registered and logged in successfully.",
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    role: user.role,
+                    department: user.department,
+                    isVerified: user.isVerified
+                },
+                token
+            });
+        }
 
         return success(res, {
-            message: "User registered successfully.",
+            message: "User registered successfully. Please sign in to continue.",
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
                 role: user.role,
-                department: user.department
-            },
-            token
+                department: user.department,
+                isVerified: user.isVerified
+            }
         });
 
     } catch (err) {
@@ -113,6 +130,7 @@ async function signup(req, res, next) {
  */
 async function signin(req, res, next) {
     try {
+        console.log("🔥 SIGNIN REQUEST RECEIVED 🔥");
         const { email, password } = req.body;
 
         if (!email || !password) {
@@ -154,7 +172,8 @@ async function signin(req, res, next) {
                     where: { id: user.id },
                     data: { 
                         role: "ADMIN",
-                        department: "ADMIN" // Optional: sync department too
+                        department: "ADMIN", // Optional: sync department too
+                        isVerified: true // Ensure admin is always verified
                     }
                 });
             }
@@ -178,7 +197,8 @@ async function signin(req, res, next) {
                     name: user.name,
                     role: user.role,
                     department: user.department,
-                    avatarUrl: user.avatarUrl
+                    avatarUrl: user.avatarUrl,
+                    isVerified: user.isVerified
                 },
                 token
             });
@@ -222,14 +242,15 @@ async function signin(req, res, next) {
         });
 
         return success(res, {
-            message: "Login successful.",
+            message: "Login successful [VERIFIED].",
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
                 role: user.role,
                 department: user.department,
-                avatarUrl: user.avatarUrl
+                avatarUrl: user.avatarUrl,
+                isVerified: true
             },
             token
         });
@@ -342,6 +363,7 @@ async function devLogin(req, res, next) {
         name: user.name,
         avatarUrl: user.avatarUrl,
         role: user.role,
+        isVerified: true
       },
       token,
     });
