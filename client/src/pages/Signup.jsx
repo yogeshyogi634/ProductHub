@@ -134,8 +134,19 @@ export default function SignupPage() {
       <div className="w-full max-w-md" style={{ minWidth: "400px" }}>
         {/* Logo / Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-brand-wakame mb-4 shadow-lg shadow-brand-wakame/20">
+          {/* <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-brand-wakame mb-4 shadow-lg shadow-brand-wakame/20">
             <span className="text-2xl font-bold text-white">N</span>
+          </div> */}
+          <div
+            className="flex items-center justify-center mb-4"
+            // onClick={() => setActiveProduct("Neokred")}
+            title="Neokred Feed"
+          >
+            <img
+              src="/assets/nk-logo.svg"
+              alt="Neokred"
+              className="h-10 w-auto object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-text-default-primary">
             Create Account
@@ -304,7 +315,10 @@ export default function SignupPage() {
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading || (step === "details" && (!!emailError || !emailPrefix.trim()))}
+              disabled={
+                loading ||
+                (step === "details" && (!!emailError || !emailPrefix.trim()))
+              }
               className="w-full py-3 bg-brand-wakame hover:bg-brand-wakame/90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-wakame/15 mt-2"
             >
               {loading ? (
