@@ -7,50 +7,21 @@ async function main() {
 
   // ─── Create 5 Products ───
   const products = [
-    {
-      name: "Perkle",
-      slug: "perkle",
-      icon: "flame",
-      color: "#F97316",
-      order: 0,
-    },
-    {
-      name: "Blutic",
-      slug: "blutic",
-      icon: "droplet",
-      color: "#3B82F6",
-      order: 1,
-    },
-    {
-      name: "Collectbot",
-      slug: "collectbot",
-      icon: "bot",
-      color: "#22C55E",
-      order: 2,
-    },
-    {
-      name: "ProfileX",
-      slug: "profilex",
-      icon: "user",
-      color: "#8B5CF6",
-      order: 3,
-    },
-    {
-      name: "Svitch",
-      slug: "svitch",
-      icon: "toggle-left",
-      color: "#EF4444",
-      order: 4,
-    },
+    "Perkle",
+    "Blutic", 
+    "Collectbot",
+    "ProfileX",
+    "Svitch",
+    "Neokred"
   ];
 
-  for (const product of products) {
+  for (const productName of products) {
     await prisma.product.upsert({
-      where: { slug: product.slug },
-      update: product,
-      create: product,
+      where: { name: productName },
+      update: { name: productName },
+      create: { name: productName },
     });
-    console.log(`  ✅ Product: ${product.name}`);
+    console.log(`  ✅ Product: ${productName}`);
   }
 
   // ─── Create management users ───
@@ -90,7 +61,7 @@ async function main() {
 
   // ─── Create sample updates ───
   const collectbot = await prisma.product.findUnique({
-    where: { slug: "collectbot" },
+    where: { name: "Collectbot" },
   });
 
   if (collectbot) {
@@ -101,7 +72,7 @@ async function main() {
           "We are integrating with our own payment gateway and from next quarter we will be integrating this to all our internal products.",
         status: "WIP",
         productId: collectbot.id,
-        authorId: adminUser.id,
+        authorId: employeeUser.id,
       },
     });
     console.log(`  ✅ Sample update: ${sampleUpdate.title}`);
@@ -110,7 +81,6 @@ async function main() {
     const sampleFeedback = await prisma.feedback.create({
       data: {
         message: "New UI is good!",
-        isAnonymous: true,
         productId: collectbot.id,
         authorId: employeeUser.id,
       },

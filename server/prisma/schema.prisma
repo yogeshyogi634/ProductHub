@@ -60,21 +60,18 @@ model Update {
   updatedAt   DateTime     @updatedAt
 
   product       Product              @relation(fields: [productId], references: [id])
-  author        User                 @relation(fields: [authorId], references: [id])
+  author        User?                @relation(fields: [authorId], references: [id])
   votes         Vote[]
   statusHistory UpdateStatusHistory[]
 }
 
 enum UpdateStatus {
   WIP
-  IN_REVIEW
-  RESOLVED
+  IN_PROGRESS
   DONE
-  PLANNED
   SHIPPED
-  DEPRECATED
-  ON_HOLD
-  CANCELLED
+  Completed
+  Backlog
 }
 
 // ─── Votes (upvote/downvote) ───
@@ -107,7 +104,7 @@ model UpdateStatusHistory {
   createdAt DateTime     @default(now())
 
   update Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [changedBy], references: [id])
+  user   User?   @relation(fields: [changedBy], references: [id])
 
   @@index([updateId, createdAt])
 }
@@ -121,7 +118,7 @@ model Feedback {
   createdAt DateTime @default(now())
 
   product Product @relation(fields: [productId], references: [id])
-  author  User    @relation(fields: [authorId], references: [id])
+  author  User?    @relation(fields: [authorId], references: [id])
   replies Reply[]
 
   @@index([productId, createdAt])
@@ -136,7 +133,7 @@ model Reply {
   createdAt  DateTime @default(now())
 
   feedback Feedback @relation(fields: [feedbackId], references: [id])
-  author   User     @relation(fields: [authorId], references: [id])
+  author   User?     @relation(fields: [authorId], references: [id])
 
   @@index([feedbackId, createdAt])
 }

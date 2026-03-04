@@ -10,6 +10,7 @@ import Admin from './pages/Admin';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PendingApproval from './pages/PendingApproval';
+import EmailSignatureGenerator from './pages/EmailSignatureGenerator';
 
 function App() {
   return (
@@ -31,6 +32,11 @@ function App() {
           <Route path="/admin" element={
             <AuthGuard>
               <Admin />
+            </AuthGuard>
+          } />
+          <Route path="/email-signature-generator" element={
+            <AuthGuard>
+              <EmailSignatureGenerator />
             </AuthGuard>
           } />
           

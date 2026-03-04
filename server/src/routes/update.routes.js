@@ -4,6 +4,7 @@ import { protect, restrictTo } from "../middleware/auth.middleware.js";
 import {
   getUpdates,
   getUpdateById,
+  getUpdatesByProduct,
   createUpdate,
   editUpdate,
   changeStatus,
@@ -14,6 +15,7 @@ import {
 
 router.get("/statuses", protect, getStatuses);
 router.get("/", protect, getUpdates);
+router.get("/product/:productId", protect, getUpdatesByProduct);
 router.get("/:id", protect, getUpdateById);
 router.get("/:id/history", protect, getStatusHistory);
 router.post("/", protect, restrictTo("ADMIN", "MANAGEMENT"), createUpdate);

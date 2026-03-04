@@ -5,18 +5,30 @@ import { api } from "../lib/api";
 export default function LoginPage() {
     const navigate = useNavigate();
     const location = useLocation();
+    const [emailPrefix, setEmailPrefix] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [loading, setLoading] = useState(false);
 
+    // Update email when emailPrefix changes
+    const updateEmailFromPrefix = (prefix) => {
+        setEmailPrefix(prefix);
+        setEmail(prefix ? `${prefix}@neokred.tech` : "");
+    };
+
     useEffect(() => {
         // Check for success message from signup
         if (location.state?.message) {
             setSuccess(location.state.message);
             if (location.state?.email) {
-                setEmail(location.state.email);
+                const fullEmail = location.state.email;
+                setEmail(fullEmail);
+                // Extract prefix from full email for display
+                if (fullEmail.includes('@neokred.tech')) {
+                    setEmailPrefix(fullEmail.split('@')[0]);
+                }
             }
             // Clear the state
             navigate(location.pathname, { replace: true, state: null });
@@ -30,6 +42,10 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
+            if (!emailPrefix.trim()) {
+                throw new Error("Please enter your email prefix.");
+            }
+
             if (!email.endsWith("@neokred.tech")) {
                 throw new Error("Only @neokred.tech emails are allowed.");
             }
@@ -113,14 +129,19 @@ export default function LoginPage() {
                             <label className="block text-sm font-medium text-text-default-primary mb-1.5">
                                 Email Address
                             </label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="you@neokred.tech"
-                                required
-                                className="w-full px-4 py-3 bg-white border border-stroke-default-primary rounded-lg text-text-default-primary placeholder-text-default-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all"
-                            />
+                            <div className="flex rounded-lg shadow-sm">
+                                <input
+                                    type="text"
+                                    value={emailPrefix}
+                                    onChange={(e) => updateEmailFromPrefix(e.target.value)}
+                                    placeholder="your.name"
+                                    required
+                                    className="flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-l-lg border border-stroke-default-primary text-text-default-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all"
+                                />
+                                <span className="inline-flex items-center px-4 rounded-r-lg border border-l-0 border-stroke-default-primary bg-background-card-secondary text-text-default-secondary text-sm">
+                                    @neokred.tech
+                                </span>
+                            </div>
                         </div>
 
                         {/* Password */}
@@ -151,7 +172,7 @@ export default function LoginPage() {
                         {/* Submit */}
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={loading || !emailPrefix.trim()}
                             className="w-full py-3 bg-brand-wakame hover:bg-brand-wakame/90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-wakame/15"
                         >
                             {loading ? (

@@ -2,25 +2,16 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { CURRENT_USER, formatDateTime } from "./data";
-import {
-    fetchUpdates as sbFetchUpdates,
-    fetchFeedback as sbFetchFeedback,
-    createUpdate as sbCreateUpdate,
-    editUpdate as sbEditUpdate,
-    removeUpdate as sbRemoveUpdate,
-    createFeedback as sbCreateFeedback,
-    removeFeedback as sbRemoveFeedback,
-    toggleLikeOnFeedback as sbToggleLike,
-    createReply as sbCreateReply,
-} from "./mock-queries";
-import { useNavigate } from "react-router-dom"; // Updated for Vite
+import { productApi } from "./api";
+import { useNavigate } from "react-router-dom";
 
 const StoreContext = createContext(null);
 
 export function StoreProvider({ children }) {
     const navigate = useNavigate(); // Updated hook
-    const [activeProduct, setActiveProductRaw] = useState("Perkle");
-    const [activeStatusFilter, setActiveStatusFilter] = useState("WIP");
+    const [products, setProducts] = useState([]);
+    const [activeProduct, setActiveProductRaw] = useState("Collectbot");
+    const [activeStatusFilter, setActiveStatusFilter] = useState("All");
     const [updates, setUpdates] = useState({});
     const [feedback, setFeedback] = useState({});
     const [isNewUpdateModalOpen, setIsNewUpdateModalOpen] = useState(false);
@@ -66,17 +57,17 @@ export function StoreProvider({ children }) {
         navigate("/login", { replace: true });
     }, [navigate]);
 
-    // ── Load data from Supabase when product changes ──────────────────────
+    // ── Load data from API when product changes ──────────────────────
     const loadProductData = useCallback(async (productName) => {
         try {
             const [updatesData, feedbackData] = await Promise.all([
-                sbFetchUpdates(productName),
-                sbFetchFeedback(productName),
+                productApi.getUpdates(productName),
+                productApi.getFeedback(productName),
             ]);
             setUpdates((prev) => ({ ...prev, [productName]: updatesData }));
             setFeedback((prev) => ({ ...prev, [productName]: feedbackData }));
         } catch (err) {
-            console.error("Failed to load data from Supabase:", err);
+            console.error("Failed to load data from API:", err);
         }
     }, []);
 
@@ -84,7 +75,23 @@ export function StoreProvider({ children }) {
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-            await loadProductData("Perkle");
+            try {
+                // Load products first
+                const loadedProducts = await productApi.getProducts();
+                setProducts(loadedProducts);
+                
+                // Set Collectbot as active if available, otherwise use first product
+                const defaultProduct = loadedProducts.includes("Collectbot") ? "Collectbot" : loadedProducts[0];
+                if (defaultProduct) {
+                    setActiveProductRaw(defaultProduct);
+                    await loadProductData(defaultProduct);
+                }
+            } catch (error) {
+                console.error("Failed to load products:", error);
+                // Use fallback with correct order
+                setProducts(["Collectbot", "ProfileX", "Perkle", "Svitch", "Blutic", "Neokred"]);
+                await loadProductData("Collectbot");
+            }
             setIsLoading(false);
         };
         init();
@@ -103,7 +110,7 @@ export function StoreProvider({ children }) {
     const setActiveProduct = useCallback(
         (product) => {
             setActiveProductRaw(product);
-            setActiveStatusFilter("WIP");
+            setActiveStatusFilter("All");
             // Load data for the selected product if not already cached
             loadProductData(product);
         },
@@ -140,7 +147,7 @@ export function StoreProvider({ children }) {
     const addUpdate = useCallback(
         async (data) => {
             try {
-                const newUpdate = await sbCreateUpdate(activeProduct, {
+                const newUpdate = await productApi.createUpdate(activeProduct, {
                     ...data,
                     authorEmail: currentUser.email,
                 });
@@ -202,14 +209,43 @@ export function StoreProvider({ children }) {
                 };
             });
 
-            // Persist to Supabase
+            // Persist to API
             try {
-                await sbEditUpdate(id, data, oldStatus);
+                await productApi.editUpdate(id, data, oldStatus);
             } catch (err) {
-                console.error("Failed to update in Supabase:", err);
+                console.error("Failed to update via API:", err);
             }
         },
         [activeProduct, updates]
+    );
+
+    const progressUpdateStatus = useCallback(
+        async (id, newStatus) => {
+            const list = updates[activeProduct] ?? [];
+            const existing = list.find((u) => u.id === id);
+            
+            if (!existing) {
+                console.error("Update not found for status progression:", id);
+                return;
+            }
+
+            // Only allow author to progress their own updates
+            if (existing.authorEmail !== currentUser.email) {
+                console.error("Only the update author can progress status");
+                return;
+            }
+
+            // Create update data with just the status change
+            const updateData = {
+                title: existing.title,
+                description: existing.description,
+                status: newStatus,
+                department: existing.department,
+            };
+
+            await updateUpdate(id, updateData);
+        },
+        [activeProduct, updates, currentUser.email, updateUpdate]
     );
 
     const deleteUpdate = useCallback(
@@ -225,9 +261,9 @@ export function StoreProvider({ children }) {
             });
 
             try {
-                await sbRemoveUpdate(id);
+                await productApi.removeUpdate(id);
             } catch (err) {
-                console.error("Failed to delete from Supabase:", err);
+                console.error("Failed to delete via API:", err);
             }
         },
         [activeProduct]
@@ -237,7 +273,7 @@ export function StoreProvider({ children }) {
     const addFeedback = useCallback(
         async (content) => {
             try {
-                const newFeedback = await sbCreateFeedback(
+                const newFeedback = await productApi.createFeedback(
                     activeProduct,
                     currentUser.name,
                     currentUser.email,
@@ -262,6 +298,9 @@ export function StoreProvider({ children }) {
                     likes: 0,
                     likedBy: [],
                     comments: [],
+                    isOwner: true,
+                    canDelete: true,
+                    canReply: true,
                 };
                 setFeedback((prev) => ({
                     ...prev,
@@ -280,7 +319,7 @@ export function StoreProvider({ children }) {
             }));
 
             try {
-                await sbRemoveFeedback(id);
+                await productApi.removeFeedback(id);
             } catch (err) {
                 console.error("Failed to delete feedback:", err);
             }
@@ -307,7 +346,7 @@ export function StoreProvider({ children }) {
             }));
 
             try {
-                await sbToggleLike(feedbackId, currentUser.email);
+                await productApi.toggleLikeOnFeedback(feedbackId, currentUser.email);
             } catch (err) {
                 console.error("Failed to toggle like:", err);
             }
@@ -318,7 +357,7 @@ export function StoreProvider({ children }) {
     const addReply = useCallback(
         async (feedbackId, content) => {
             try {
-                const reply = await sbCreateReply(
+                const reply = await productApi.createReply(
                     feedbackId,
                     currentUser.name,
                     currentUser.email,
@@ -341,7 +380,9 @@ export function StoreProvider({ children }) {
                     authorEmail: currentUser.email,
                     isAnonymous: false,
                     content,
+                    createdAt: Date.now(),
                     postedDate: formatDateTime(),
+                    canDelete: true,
                 };
                 setFeedback((prev) => ({
                     ...prev,
@@ -356,10 +397,41 @@ export function StoreProvider({ children }) {
         [activeProduct, currentUser]
     );
 
+    const deleteReply = useCallback(
+        async (feedbackId, replyId) => {
+            // Optimistic UI update - remove reply from feedback
+            setFeedback((prev) => ({
+                ...prev,
+                [activeProduct]: (prev[activeProduct] ?? []).map((f) =>
+                    f.id === feedbackId
+                        ? { ...f, comments: f.comments.filter((r) => r.id !== replyId) }
+                        : f
+                ),
+            }));
+
+            try {
+                await productApi.removeReply(replyId);
+            } catch (err) {
+                console.error("Failed to delete reply:", err);
+                // Revert optimistic update on error
+                setFeedback((prev) => ({
+                    ...prev,
+                    [activeProduct]: (prev[activeProduct] ?? []).map((f) =>
+                        f.id === feedbackId
+                            ? { ...f, comments: [...f.comments] } // This is a simplified revert - ideally we'd restore the deleted reply
+                            : f
+                    ),
+                }));
+            }
+        },
+        [activeProduct]
+    );
+
     return (
         <StoreContext.Provider
             value={{
                 // state
+                products,
                 activeProduct,
                 activeStatusFilter,
                 updates,
@@ -386,11 +458,13 @@ export function StoreProvider({ children }) {
                 // actions
                 addUpdate,
                 updateUpdate,
+                progressUpdateStatus,
                 deleteUpdate,
                 addFeedback,
                 deleteFeedback,
                 toggleLike,
                 addReply,
+                deleteReply,
             }}
         >
             {children}

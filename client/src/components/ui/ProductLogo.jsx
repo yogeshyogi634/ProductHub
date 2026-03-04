@@ -33,12 +33,7 @@ export function ProductLogo({ product, className }) {
                         <img src="/assets/svitch-logo.png" alt="Svitch" width={24} height={24} className="w-full h-full object-cover" />
                     </div>
                 );
-            case "Neokred":
-                return (
-                    <div className="w-full h-full rounded-xs flex items-center justify-center overflow-hidden">
-                        <img src="/assets/Neokred-logo.png" alt="Neokred" width={24} height={24} className="w-full h-full object-cover" />
-                    </div>
-                );
+
             default:
                 return (
                     <div className="w-full h-full bg-background-card-secondary rounded-xs flex items-center justify-center text-text-default-secondary text-xs font-bold">
