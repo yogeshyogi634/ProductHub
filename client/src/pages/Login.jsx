@@ -97,7 +97,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background-app px-4">
       {/* Decorative accent */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-wakame via-brand-primary to-brand-wakame" />
+      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500" />
 
       <div className="w-full max-w-md" style={{ minWidth: "400px" }}>
         {/* Logo / Brand */}
@@ -126,7 +126,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Success */}
             {success && (
-              <div className="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-orange-50 border border-orange-200 text-orange-800 px-4 py-3 rounded-lg text-sm">
                 {success}
               </div>
             )}
@@ -148,7 +148,7 @@ export default function LoginPage() {
                   type="text"
                   value={emailPrefix}
                   onChange={(e) => updateEmailFromPrefix(e.target.value)}
-                  placeholder="your.name"
+                  placeholder="Email"
                   required
                   className="flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-l-lg border border-stroke-default-primary text-text-default-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all"
                 />
@@ -177,7 +177,7 @@ export default function LoginPage() {
             <div className="text-right -mt-1">
               <Link
                 to="/forgot-password"
-                className="text-xs text-brand-wakame hover:text-brand-wakame/80 font-medium transition-colors"
+                className="text-xs text-orange-500 hover:text-orange-600 font-medium transition-colors"
               >
                 Forgot password?
               </Link>
@@ -187,7 +187,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !emailPrefix.trim()}
-              className="w-full py-3 bg-brand-wakame hover:bg-brand-wakame/90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-wakame/15"
+              className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/15"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -221,7 +221,7 @@ export default function LoginPage() {
               Don&apos;t have an account?{" "}
               <Link
                 to="/signup"
-                className="text-brand-wakame hover:text-brand-wakame/80 font-medium transition-colors"
+                className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
               >
                 Sign up
               </Link>

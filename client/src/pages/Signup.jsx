@@ -23,6 +23,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [showApprovalPopup, setShowApprovalPopup] = useState(false);
 
   // OTP State
   const [otp, setOtp] = useState("");
@@ -110,15 +111,9 @@ export default function SignupPage() {
         otp,
       });
 
-      // Redirect to signin page after successful signup
-      // Do not set user in localStorage - they need to sign in
-      navigate("/login", {
-        replace: true,
-        state: {
-          message: "Account created successfully! Please sign in to continue.",
-          email: email,
-        },
-      });
+      // Show admin approval popup instead of redirecting
+      setShowApprovalPopup(true);
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setError(err.message || "Verification failed. Please try again.");
@@ -126,17 +121,19 @@ export default function SignupPage() {
     }
   };
 
+  const handleClosePopup = () => {
+    setShowApprovalPopup(false);
+    navigate("/login", { replace: true });
+  };
+
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-background-app px-4 py-8">
       {/* Decorative accent */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-wakame via-brand-primary to-brand-wakame" />
+      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500" />
 
       <div className="w-full max-w-md" style={{ minWidth: "400px" }}>
         {/* Logo / Brand */}
         <div className="text-center mb-8">
-          {/* <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-brand-wakame mb-4 shadow-lg shadow-brand-wakame/20">
-            <span className="text-2xl font-bold text-white">N</span>
-          </div> */}
           <div
             className="flex items-center justify-center mb-4"
             // onClick={() => setActiveProduct("Neokred")}
@@ -180,7 +177,7 @@ export default function SignupPage() {
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="John Doe"
+                    placeholder="Full Name"
                     required
                     className="w-full px-4 py-3 bg-white border border-stroke-default-primary rounded-lg text-text-default-primary placeholder-text-default-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary transition-all"
                   />
@@ -199,7 +196,7 @@ export default function SignupPage() {
                         updateEmailFromPrefix(e.target.value);
                       }}
                       onBlur={() => validateEmail(email)}
-                      placeholder="your.name"
+                      placeholder="Email"
                       required
                       className={`flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-l-lg border text-text-default-primary focus:outline-none focus:ring-2 transition-all ${
                         emailError
@@ -297,7 +294,7 @@ export default function SignupPage() {
                   <button
                     type="button"
                     onClick={() => setStep("details")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-wakame hover:text-brand-wakame/80 font-medium"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-orange-500 hover:text-orange-600 font-medium"
                   >
                     Edit Details
                   </button>
@@ -319,7 +316,7 @@ export default function SignupPage() {
                 loading ||
                 (step === "details" && (!!emailError || !emailPrefix.trim()))
               }
-              className="w-full py-3 bg-brand-wakame hover:bg-brand-wakame/90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-wakame/15 mt-2"
+              className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/15 mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -357,7 +354,7 @@ export default function SignupPage() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-brand-wakame hover:text-brand-wakame/80 font-medium transition-colors"
+                className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
               >
                 Sign in
               </Link>
@@ -370,6 +367,54 @@ export default function SignupPage() {
           Only @neokred.tech email addresses are allowed
         </p>
       </div>
+
+      {/* Admin Approval Popup */}
+      {showApprovalPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white border border-stroke-default-primary rounded-xl p-6 shadow-lg w-100">
+            <div className="text-center">
+              {/* Success Icon */}
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-3">
+                <svg
+                  className="w-6 h-6 text-orange-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+
+              <h3 className="text-lg font-bold text-gray-900 mb-2">
+                Account Created!
+              </h3>
+
+              <p className="text-gray-600 text-sm mb-4">
+                Admin needs to approve your request before you can access the
+                platform.
+              </p>
+
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
+                <p className="text-orange-800 text-xs font-medium">
+                  📧 We'll notify you via email once approved.
+                </p>
+              </div>
+
+              <button
+                onClick={handleClosePopup}
+                className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer"
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
