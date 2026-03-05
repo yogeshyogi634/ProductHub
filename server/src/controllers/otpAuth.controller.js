@@ -1,7 +1,10 @@
 import prisma from "../utils/prisma.js";
 import { success, error } from "../utils/response.js";
-import { assignRole, getAvailableDepartments } from "../utils/roleAssignment.js";
-import emailService from "../utils/emailService.js";
+import {
+  assignRole,
+  getAvailableDepartments,
+} from "../utils/roleAssignment.js";
+import { generateOTP, sendOTPEmail, validateEmailDomain } from "../utils/emailService.js";
 import { signToken } from "../utils/jwt.js";
 
 /**
@@ -29,14 +32,22 @@ async function requestOTP(req, res, next) {
     const normalizedDepartment = department.trim();
 
     // Validate email domain
-    if (!emailService.validateEmailDomain(normalizedEmail)) {
-      return error(res, "Email domain not allowed. Please use your company email address.", 403);
+    if (!validateEmailDomain(normalizedEmail)) {
+      return error(
+        res,
+        "Email domain not allowed. Please use your company email address.",
+        403,
+      );
     }
 
     // Validate department
     const availableDepartments = getAvailableDepartments();
     if (!availableDepartments.includes(normalizedDepartment)) {
-      return error(res, `Invalid department. Available departments: ${availableDepartments.join(', ')}`, 400);
+      return error(
+        res,
+        `Invalid department. Available departments: ${availableDepartments.join(", ")}`,
+        400,
+      );
     }
 
     // Rate limiting: Check recent OTP requests
@@ -44,9 +55,9 @@ async function requestOTP(req, res, next) {
       where: {
         email: normalizedEmail,
         createdAt: {
-          gte: new Date(Date.now() - 60 * 60 * 1000) // Last hour
-        }
-      }
+          gte: new Date(Date.now() - 60 * 60 * 1000), // Last hour
+        },
+      },
     });
 
     if (recentOTPs >= 3) {
@@ -58,33 +69,37 @@ async function requestOTP(req, res, next) {
       where: {
         email: normalizedEmail,
         createdAt: {
-          gte: new Date(Date.now() - 1 * 60 * 1000) // Last 1 minute
-        }
+          gte: new Date(Date.now() - 1 * 60 * 1000), // Last 1 minute
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     if (recentOTP) {
       const timeDiff = Date.now() - new Date(recentOTP.createdAt).getTime();
       const secondsLeft = Math.ceil((1 * 60 * 1000 - timeDiff) / 1000);
-      return error(res, `Please wait ${secondsLeft} seconds before requesting a new OTP.`, 429);
+      return error(
+        res,
+        `Please wait ${secondsLeft} seconds before requesting a new OTP.`,
+        429,
+      );
     }
 
     // Invalidate existing OTPs for this email
     await prisma.oTP.updateMany({
       where: {
         email: normalizedEmail,
-        isUsed: false
+        isUsed: false,
       },
       data: {
-        isUsed: true
-      }
+        isUsed: true,
+      },
     });
 
     // Generate new OTP
-    const otpCode = emailService.generateOTP();
+    const otpCode = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // Save OTP to database
@@ -92,13 +107,17 @@ async function requestOTP(req, res, next) {
       data: {
         email: normalizedEmail,
         code: otpCode,
-        expiresAt
-      }
+        expiresAt,
+      },
     });
 
     // Send OTP email
-    const emailResult = await emailService.sendOTPEmail(normalizedEmail, normalizedName, otpCode);
-    
+    const emailResult = await sendOTPEmail(
+      normalizedEmail,
+      normalizedName,
+      otpCode,
+    );
+
     if (!emailResult.success) {
       return error(res, "Failed to send OTP email. Please try again.", 500);
     }
@@ -107,9 +126,8 @@ async function requestOTP(req, res, next) {
       message: "OTP sent successfully. Please check your email.",
       email: normalizedEmail,
       expiresAt,
-      otpId: otpRecord.id
+      otpId: otpRecord.id,
     });
-
   } catch (err) {
     next(err);
   }
@@ -138,9 +156,9 @@ async function verifyOTP(req, res, next) {
         code: otpCode,
         isUsed: false,
         expiresAt: {
-          gt: new Date()
-        }
-      }
+          gt: new Date(),
+        },
+      },
     });
 
     if (!otpRecord) {
@@ -149,13 +167,13 @@ async function verifyOTP(req, res, next) {
         where: {
           email: normalizedEmail,
           code: otpCode,
-          isUsed: false
+          isUsed: false,
         },
         data: {
           attempts: {
-            increment: 1
-          }
-        }
+            increment: 1,
+          },
+        },
       });
 
       return error(res, "Invalid or expired OTP code.", 400);
@@ -164,12 +182,12 @@ async function verifyOTP(req, res, next) {
     // Mark OTP as used
     await prisma.oTP.update({
       where: { id: otpRecord.id },
-      data: { isUsed: true }
+      data: { isUsed: true },
     });
 
     // Check if user already exists
     let user = await prisma.user.findUnique({
-      where: { email: normalizedEmail }
+      where: { email: normalizedEmail },
     });
 
     if (user) {
@@ -178,7 +196,11 @@ async function verifyOTP(req, res, next) {
       if (name && name.trim() && name.trim() !== user.name) {
         updateData.name = name.trim();
       }
-      if (department && department.trim() && department.trim() !== user.department) {
+      if (
+        department &&
+        department.trim() &&
+        department.trim() !== user.department
+      ) {
         updateData.department = department.trim();
         // Reassign role based on new department
         updateData.role = assignRole(normalizedEmail, department.trim());
@@ -188,25 +210,29 @@ async function verifyOTP(req, res, next) {
       if (Object.keys(updateData).length > 0) {
         user = await prisma.user.update({
           where: { id: user.id },
-          data: updateData
+          data: updateData,
         });
       }
     } else {
       // Create new user
       if (!name || !department) {
-        return error(res, "Name and department are required for new users.", 400);
+        return error(
+          res,
+          "Name and department are required for new users.",
+          400,
+        );
       }
 
       const role = assignRole(normalizedEmail, department.trim());
-      
+
       user = await prisma.user.create({
         data: {
           email: normalizedEmail,
           name: name.trim(),
           department: department.trim(),
           role,
-          isVerified: true
-        }
+          isVerified: true,
+        },
       });
     }
 
@@ -214,7 +240,7 @@ async function verifyOTP(req, res, next) {
     const token = signToken({
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
     });
 
     // Set httpOnly cookie
@@ -233,10 +259,9 @@ async function verifyOTP(req, res, next) {
         name: user.name,
         department: user.department,
         role: user.role,
-        isVerified: user.isVerified
-      }
+        isVerified: user.isVerified,
+      },
     });
-
   } catch (err) {
     next(err);
   }
@@ -258,7 +283,7 @@ async function resendOTP(req, res, next) {
     const normalizedEmail = email.toLowerCase().trim();
 
     // Validate email domain
-    if (!emailService.validateEmailDomain(normalizedEmail)) {
+    if (!validateEmailDomain(normalizedEmail)) {
       return error(res, "Email domain not allowed.", 403);
     }
 
@@ -267,9 +292,9 @@ async function resendOTP(req, res, next) {
       where: {
         email: normalizedEmail,
         createdAt: {
-          gte: new Date(Date.now() - 60 * 60 * 1000) // Last hour
-        }
-      }
+          gte: new Date(Date.now() - 60 * 60 * 1000), // Last hour
+        },
+      },
     });
 
     if (recentOTPs >= 5) {
@@ -281,33 +306,37 @@ async function resendOTP(req, res, next) {
       where: {
         email: normalizedEmail,
         createdAt: {
-          gte: new Date(Date.now() - 2 * 60 * 1000) // Last 2 minutes
-        }
+          gte: new Date(Date.now() - 2 * 60 * 1000), // Last 2 minutes
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     if (recentOTP) {
       const timeDiff = Date.now() - new Date(recentOTP.createdAt).getTime();
       const secondsLeft = Math.ceil((2 * 60 * 1000 - timeDiff) / 1000);
-      return error(res, `Please wait ${secondsLeft} seconds before requesting a new OTP.`, 429);
+      return error(
+        res,
+        `Please wait ${secondsLeft} seconds before requesting a new OTP.`,
+        429,
+      );
     }
 
     // Invalidate existing OTPs
     await prisma.oTP.updateMany({
       where: {
         email: normalizedEmail,
-        isUsed: false
+        isUsed: false,
       },
       data: {
-        isUsed: true
-      }
+        isUsed: true,
+      },
     });
 
     // Generate new OTP
-    const otpCode = emailService.generateOTP();
+    const otpCode = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // Save OTP to database
@@ -315,19 +344,23 @@ async function resendOTP(req, res, next) {
       data: {
         email: normalizedEmail,
         code: otpCode,
-        expiresAt
-      }
+        expiresAt,
+      },
     });
 
     // Get user name if exists
     const user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
-      select: { name: true }
+      select: { name: true },
     });
 
     // Send OTP email
-    const emailResult = await emailService.sendOTPEmail(normalizedEmail, user?.name || 'User', otpCode);
-    
+    const emailResult = await sendOTPEmail(
+      normalizedEmail,
+      user?.name || "User",
+      otpCode,
+    );
+
     if (!emailResult.success) {
       return error(res, "Failed to send OTP email. Please try again.", 500);
     }
@@ -335,9 +368,8 @@ async function resendOTP(req, res, next) {
     return success(res, {
       message: "OTP resent successfully. Please check your email.",
       email: normalizedEmail,
-      expiresAt
+      expiresAt,
     });
-
   } catch (err) {
     next(err);
   }
@@ -350,9 +382,9 @@ async function resendOTP(req, res, next) {
 async function getDepartments(req, res, next) {
   try {
     const departments = getAvailableDepartments();
-    
+
     return success(res, {
-      departments
+      departments,
     });
   } catch (err) {
     next(err);
