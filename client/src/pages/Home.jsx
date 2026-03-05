@@ -21,9 +21,13 @@ export default function Home() {
     }, [setAuthUser]);
 
     return (
-        <div className="flex flex-col h-screen w-full overflow-hidden bg-background-app font-sans">
+        <div className="flex flex-col h-screen w-full overflow-hidden bg-gradient-to-br from-background-app via-background-app to-orange-50/30 font-sans relative">
+            {/* Background decorative elements */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-brand-primary)/3,_transparent_70%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--color-brand-primary)/2,_transparent_70%)]" />
+            
             <Navbar />
-            <div className="flex flex-1 w-full overflow-hidden">
+            <div className="flex flex-1 w-full overflow-hidden relative z-10">
                 {!isCompany && <ProductUpdates />}
                 <FeedbackWall />
             </div>

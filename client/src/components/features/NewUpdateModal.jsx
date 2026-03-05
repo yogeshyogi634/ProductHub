@@ -103,25 +103,27 @@ export function NewUpdateModal() {
   if (!isNewUpdateModalOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true">
+    <div className="fixed inset-0 z-[100] animate-in fade-in duration-300" role="dialog" aria-modal="true">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/35" onClick={closeModal} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeModal} />
 
       {/* Centered modal */}
       <div className="absolute inset-0 flex items-center justify-center p-lg">
         <div
-          className="relative bg-background-app border border-stroke-default-primary-v2 rounded-sm w-[520px] max-w-[90vw] flex flex-col shadow-xl"
+          className="relative bg-background-app/95 backdrop-blur-xl border border-stroke-default-primary-v2/50 rounded-2xl w-[520px] max-w-[90vw] flex flex-col shadow-2xl shadow-black/10 animate-in zoom-in-95 duration-300"
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Modal glow */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none rounded-2xl" />
           {/* Header */}
-          <div className="flex items-center justify-between px-lg py-md border-b border-stroke-default-primary-v2">
+          <div className="flex items-center justify-between px-lg py-md border-b border-stroke-default-primary-v2/50 relative z-10">
             <div className="flex flex-col gap-2xs">
-              <h2 className="text-text-default-primary font-semibold text-base">
+              <h2 className="text-text-default-primary font-bold text-lg bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text">
                 {isEditing ? "Edit Update" : "New Update"}
               </h2>
-              <span className="text-xs text-text-default-secondary">
+              <span className="text-sm text-text-default-secondary font-medium">
                 {isEditing ? "Editing update for " : "Posting to "}
-                <span className="text-text-default-primary font-medium">
+                <span className="text-orange-600 font-semibold">
                   {activeProduct}
                 </span>
               </span>
@@ -129,18 +131,19 @@ export function NewUpdateModal() {
             <button
               type="button"
               onClick={closeModal}
-              className="w-8 h-8 flex items-center justify-center rounded-sm border border-stroke-default-primary-v2 hover:bg-background-card-secondary transition-colors"
+              className="w-10 h-10 flex items-center justify-center rounded-xl border border-stroke-default-primary-v2/60 hover:bg-red-100/60 hover:border-red-300 transition-all duration-300 group backdrop-blur-sm relative overflow-hidden cursor-pointer"
             >
-              <X className="w-4 h-4 text-icon-default-primary" />
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <X className="w-5 h-5 text-icon-default-primary group-hover:text-red-600 transition-all duration-300 group-hover:scale-110 relative z-10" />
             </button>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-md p-lg">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-md p-lg relative z-10">
             {/* Title */}
-            <div className="flex flex-col gap-2xs">
-              <label className="text-xs font-medium text-text-default-secondary">
-                Title <span className="text-background-actions-error">*</span>
+            <div className="flex flex-col gap-2xs group">
+              <label className="text-sm font-semibold text-text-default-primary">
+                Title <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -152,14 +155,14 @@ export function NewUpdateModal() {
                 }}
                 placeholder="e.g. Payment Integration on Perkle"
                 className={cn(
-                  "h-10 px-md border rounded-sm bg-background-app text-sm text-text-default-primary placeholder:text-text-default-secondary outline-none transition-colors",
+                  "h-12 px-md border rounded-xl bg-background-app/60 backdrop-blur-sm text-sm text-text-default-primary placeholder:text-text-default-secondary/70 outline-none transition-all duration-300 shadow-sm hover:shadow-md group-hover:shadow-orange-500/10",
                   errors.title
-                    ? "border-background-actions-error"
-                    : "border-stroke-default-primary focus:border-stroke-default-inverse",
+                    ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                    : "border-stroke-default-primary/60 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 hover:border-orange-500/30",
                 )}
               />
               {errors.title && (
-                <span className="text-xs text-background-actions-error">
+                <span className="text-sm text-red-600 font-medium bg-red-50 px-2 py-1 rounded-lg border border-red-200">
                   {errors.title}
                 </span>
               )}
@@ -167,22 +170,29 @@ export function NewUpdateModal() {
 
             {/* Description — Rich Text Editor */}
             <div className="flex flex-col gap-2xs">
-              <label className="text-xs font-medium text-text-default-secondary">
+              <label className="text-sm font-semibold text-text-default-primary">
                 Description{" "}
-                <span className="text-background-actions-error">*</span>
+                <span className="text-red-500">*</span>
               </label>
-              <RichTextEditor
-                value={description}
-                onChange={(html) => {
-                  setDescription(html);
-                  if (errors.description)
-                    setErrors((p) => ({ ...p, description: undefined }));
-                }}
-                placeholder="Describe the update…"
-                error={!!errors.description}
-              />
+              <div className={cn(
+                "border rounded-xl shadow-sm transition-all duration-300 hover:shadow-md overflow-hidden",
+                errors.description
+                  ? "border-red-300 hover:border-red-400"
+                  : "border-stroke-default-primary/60 hover:border-orange-500/30 focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20"
+              )}>
+                <RichTextEditor
+                  value={description}
+                  onChange={(html) => {
+                    setDescription(html);
+                    if (errors.description)
+                      setErrors((p) => ({ ...p, description: undefined }));
+                  }}
+                  placeholder="Describe the update…"
+                  error={!!errors.description}
+                />
+              </div>
               {errors.description && (
-                <span className="text-xs text-background-actions-error">
+                <span className="text-sm text-red-600 font-medium bg-red-50 px-2 py-1 rounded-lg border border-red-200">
                   {errors.description}
                 </span>
               )}
@@ -190,7 +200,7 @@ export function NewUpdateModal() {
 
             {/* Status */}
             <div className="flex flex-col gap-2xs">
-              <label className="text-xs font-medium text-text-default-secondary">
+              <label className="text-sm font-semibold text-text-default-primary">
                 Status
               </label>
               <div className="flex gap-sm">
@@ -200,31 +210,32 @@ export function NewUpdateModal() {
                     type="button"
                     onClick={() => setStatus(s)}
                     className={cn(
-                      "flex-1 h-9 border rounded-sm text-sm font-medium transition-colors",
+                      "flex-1 h-12 border rounded-xl text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow-md relative overflow-hidden group cursor-pointer",
                       status === s
                         ? s === "WIP"
-                          ? "bg-background-actions-warning-subtle border-stroke-actions-warning text-text-actions-warning"
+                          ? "bg-yellow-100 border-yellow-300 text-yellow-800 shadow-yellow-500/20"
                           : s === "DONE"
-                            ? "bg-background-actions-success-subtle border-stroke-actions-success text-text-actions-success"
-                            : "bg-background-card-secondary border-stroke-default-inverse text-text-default-primary"
-                        : "bg-background-app border-stroke-default-primary-v2 text-text-default-secondary hover:bg-background-card-primary",
+                            ? "bg-green-100 border-green-300 text-green-800 shadow-green-500/20"
+                            : "bg-blue-100 border-blue-300 text-blue-800 shadow-blue-500/20"
+                        : "bg-background-app/60 backdrop-blur-sm border-stroke-default-primary-v2/60 text-text-default-secondary hover:bg-background-card-primary/80 hover:border-orange-500/30",
                     )}
                   >
-                    {s}
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="relative z-10">{s}</span>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Department */}
-            <div className="flex flex-col gap-2xs">
-              <label className="text-xs font-medium text-text-default-secondary">
+            <div className="flex flex-col gap-2xs group">
+              <label className="text-sm font-semibold text-text-default-primary">
                 Department
               </label>
               <select
                 value={departmentType}
                 onChange={(e) => setDepartmentType(e.target.value)}
-                className="h-10 pl-sm pr-8 border border-stroke-default-primary rounded-sm bg-background-app text-sm text-text-default-primary outline-none focus:border-stroke-default-inverse transition-colors appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23999%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_12px_center] bg-no-repeat"
+                className="h-12 pl-sm pr-8 border border-stroke-default-primary/60 rounded-xl bg-background-app/60 backdrop-blur-sm text-sm text-text-default-primary outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 appearance-none shadow-sm hover:shadow-md group-hover:shadow-orange-500/10 hover:border-orange-500/30 bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23f97316%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E')] bg-[length:16px] bg-[right_16px_center] bg-no-repeat"
               >
                 {DEPT_TYPES.map((t) => (
                   <option key={t} value={t}>
@@ -235,7 +246,7 @@ export function NewUpdateModal() {
             </div>
 
             {/* Footer */}
-            <div className="flex gap-sm justify-between pt-sm border-t border-stroke-default-primary-v2">
+            <div className="flex gap-sm justify-between pt-md border-t border-stroke-default-primary-v2/50">
               <div>
                 {isEditing && (
                   <button
@@ -244,9 +255,10 @@ export function NewUpdateModal() {
                       deleteUpdate(editingUpdate.id);
                       closeModal();
                     }}
-                    className="px-md py-sm rounded-sm border border-background-actions-error text-sm text-background-actions-error hover:bg-background-actions-error hover:text-white transition-colors font-medium"
+                    className="px-lg py-sm rounded-xl border border-red-300 text-sm text-red-600 hover:bg-red-500 hover:text-white transition-all duration-300 font-semibold shadow-sm hover:shadow-md backdrop-blur-sm bg-red-50/50 relative overflow-hidden group cursor-pointer"
                   >
-                    Delete
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <span className="relative z-10">Delete</span>
                   </button>
                 )}
               </div>
@@ -254,15 +266,17 @@ export function NewUpdateModal() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-md py-sm rounded-sm border border-stroke-default-primary-v2 text-sm text-text-default-secondary hover:bg-background-card-secondary transition-colors"
+                  className="px-lg py-sm rounded-xl border border-stroke-default-primary-v2/60 text-sm text-text-default-secondary hover:bg-background-card-secondary/80 hover:border-orange-500/30 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group cursor-pointer"
                 >
-                  Cancel
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative z-10">Cancel</span>
                 </button>
                 <button
                   type="submit"
-                  className="px-md py-sm rounded-sm bg-brand-primary text-text-brand-on-background text-sm font-medium hover:opacity-90 transition-opacity"
+                  className="px-lg py-sm rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-sm font-bold transition-all duration-300 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 transform hover:scale-105 active:scale-95 relative overflow-hidden group cursor-pointer"
                 >
-                  {isEditing ? "Save Changes" : "Post Update"}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative z-10">{isEditing ? "Save Changes" : "Post Update"}</span>
                 </button>
               </div>
             </div>

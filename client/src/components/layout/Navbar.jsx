@@ -66,20 +66,24 @@ export function Navbar() {
   const hasFilter = !!dateRangeStart;
 
   return (
-    <div className="w-full bg-background-app border-b border-stroke-default-primary-v2 px-lg-2 py-lg flex justify-between items-center shrink-0">
+    <div className="w-full bg-background-app/80 backdrop-blur-xl border-b border-stroke-default-primary-v2/50 px-lg-2 py-lg flex justify-between items-center shrink-0 relative z-20">
+      {/* Navbar glow */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
       {/* Left: Product Tabs */}
       <div className="flex gap-md items-center h-10">
         {/* Company Logo */}
         <div
-          className="h-full flex items-center pr-md mr-md border-r border-stroke-default-primary-v2 cursor-pointer transition-opacity hover:opacity-80"
-          // onClick={() => setActiveProduct("Neokred")}
+          className="h-full flex items-center pr-md mr-md border-r border-stroke-default-primary-v2/50 cursor-pointer group"
           title="Neokred Feed"
         >
-          <img
-            src="/assets/nk-logo.svg"
-            alt="Neokred"
-            className="h-6 w-auto object-contain"
-          />
+          <div className="relative">
+            <div className="absolute inset-0 bg-orange-500/10 rounded-lg blur-lg group-hover:bg-orange-500/20 transition-all duration-300 scale-110" />
+            <img
+              src="/assets/nk-logo.svg"
+              alt="Neokred"
+              className="h-6 w-auto object-contain relative z-10 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-md"
+            />
+          </div>
         </div>
 
         {(products || [])
@@ -91,18 +95,25 @@ export function Navbar() {
                 key={product}
                 onClick={() => setActiveProduct(product)}
                 className={[
-                  "rounded-xs px-md py-2xs flex gap-sm items-center h-full transition-colors",
+                  "rounded-lg px-md py-2xs flex gap-sm items-center h-full transition-all duration-300 relative overflow-hidden group cursor-pointer",
                   isActive
-                    ? "bg-background-card-primary border-[1.5px] border-brand-wakame"
-                    : "bg-background-app border border-stroke-default-primary-v2 hover:bg-background-card-primary",
+                    ? "bg-background-card-primary/80 backdrop-blur-sm border-[1.5px] border-orange-500 shadow-lg shadow-orange-500/20"
+                    : "bg-background-app/60 backdrop-blur-sm border border-stroke-default-primary-v2/60 hover:bg-background-card-primary/80 hover:border-orange-500/30 hover:shadow-md hover:shadow-orange-500/10",
                 ].join(" ")}
               >
+                {/* Button glow effect */}
+                <div
+                  className={`cursor-pointer absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isActive ? "opacity-50" : ""}`}
+                />
                 {isActive && (
-                  <span className="text-text-default-primary font-medium text-sm">
+                  <span className="text-text-default-primary font-semibold text-sm relative z-10">
                     {product}
                   </span>
                 )}
-                <ProductLogo product={product} className="w-5 h-5" />
+                <ProductLogo
+                  product={product}
+                  className="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:scale-110"
+                />
               </button>
             );
           })}
@@ -115,15 +126,18 @@ export function Navbar() {
           {activeProduct !== "Neokred" && canPostUpdates && (
             <button
               onClick={() => setIsNewUpdateModalOpen(true)}
-              className="bg-brand-primary text-text-brand-on-background px-md py-sm rounded-sm flex items-center gap-xs font-medium text-sm hover:opacity-90 transition-opacity"
+              className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-md py-sm rounded-xl flex items-center gap-xs font-medium text-sm transition-all duration-300 shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/25 transform hover:scale-102 active:scale-98 relative overflow-hidden group border border-orange-400/30 cursor-pointer"
             >
-              New Update for {activeProduct}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative z-10">
+                New Update for {activeProduct}
+              </span>
               <img
                 src="/assets/new update-icon.png"
                 alt="New Update"
                 width={16}
                 height={16}
-                className="w-4 h-4"
+                className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:rotate-6 "
               />
             </button>
           )}
@@ -133,21 +147,24 @@ export function Navbar() {
             <button
               onClick={() => setShowCalendar((v) => !v)}
               className={[
-                "border p-sm rounded-sm flex items-center justify-center transition-colors gap-xs",
+                "border p-sm rounded-xl flex items-center justify-center transition-all duration-300 gap-xs backdrop-blur-sm relative overflow-hidden group cursor-pointer",
                 hasFilter
-                  ? "bg-brand-primary border-brand-primary"
-                  : "bg-background-card-primary border-stroke-default-primary hover:bg-background-card-secondary",
+                  ? "bg-orange-500 border-orange-500 shadow-lg shadow-orange-500/25"
+                  : "bg-background-card-primary/80 border-stroke-default-primary/60 hover:bg-background-card-secondary/80 hover:border-orange-500/30 hover:shadow-md",
               ].join(" ")}
             >
+              <div
+                className={`absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${hasFilter ? "opacity-30" : ""}`}
+              />
               <img
                 src="/assets/Calendar-icon.svg"
                 alt="Calendar"
                 width={16}
                 height={16}
-                className="w-4 h-4 dark-invert"
+                className="w-4 h-4 dark-invert relative z-10 transition-transform duration-300 group-hover:scale-110"
               />
               {hasFilter && (
-                <span className="text-xs font-medium text-text-brand-on-background whitespace-nowrap">
+                <span className="text-xs font-semibold text-text-brand-on-background whitespace-nowrap relative z-10">
                   {formatRangeLabel()}
                 </span>
               )}
@@ -155,7 +172,7 @@ export function Navbar() {
 
             {/* Calendar dropdown */}
             {showCalendar && (
-              <div className="absolute top-full right-0 mt-2 bg-background-app border border-stroke-default-primary-v2 rounded-sm shadow-xl p-lg z-50 w-[300px]">
+              <div className="absolute top-full right-0 mt-2 bg-background-app/95 backdrop-blur-xl border border-stroke-default-primary-v2/50 rounded-2xl shadow-2xl shadow-black/10 p-lg z-50 w-[300px] animate-in slide-in-from-top-2 duration-300">
                 <DateRangeCalendar
                   startDate={dateRangeStart}
                   endDate={dateRangeEnd}
@@ -176,8 +193,9 @@ export function Navbar() {
           {isAdmin && (
             <Link
               to="/admin"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary/15 border border-brand-primary/30 rounded-lg text-brand-primary text-sm font-medium hover:bg-brand-primary/25 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/10 border border-orange-500/30 rounded-xl text-orange-600 text-sm font-semibold hover:bg-orange-500/20 hover:border-orange-500/50 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group"
             >
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <svg
                 width="14"
                 height="14"
@@ -187,10 +205,11 @@ export function Navbar() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="relative z-10 transition-transform duration-300 group-hover:scale-110"
               >
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-              Admin
+              <span className="relative z-10">Admin</span>
             </Link>
           )}
 
@@ -198,8 +217,9 @@ export function Navbar() {
           <Link
             to="/email-signature-generator"
             target="_blank"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary/15 border border-brand-primary/30 rounded-lg text-brand-primary text-sm font-medium hover:bg-brand-primary/25 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500/10 border border-orange-500/30 rounded-xl text-orange-600 text-sm font-semibold hover:bg-orange-500/20 hover:border-orange-500/50 transition-all duration-300 backdrop-blur-sm relative overflow-hidden group"
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <svg
               width="14"
               height="14"
@@ -209,23 +229,27 @@ export function Navbar() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              className="relative z-10 transition-transform duration-300 group-hover:scale-110"
             >
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
               <path d="M22 6l-10 7L2 6" />
             </svg>
-            Email Signature
+            <span className="relative z-10">Email Signature</span>
           </Link>
 
-          <span className="text-text-default-secondary text-sm">
-            {currentUser?.email || "user@neokred.tech"}
-          </span>
+          <div className="bg-background-card-secondary/60 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-stroke-default-primary/30">
+            <span className="text-text-default-secondary text-sm font-medium">
+              {currentUser?.email || "user@neokred.tech"}
+            </span>
+          </div>
 
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleTheme}
             title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-            className="bg-background-card-primary border border-stroke-default-primary p-sm rounded-sm flex items-center justify-center hover:bg-background-card-secondary transition-colors"
+            className="bg-background-card-primary/80 backdrop-blur-sm border border-stroke-default-primary/60 p-sm rounded-xl flex items-center justify-center hover:bg-background-card-secondary/80 hover:border-orange-500/30 transition-all duration-300 group relative overflow-hidden cursor-pointer"
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             {isDarkMode ? (
               <svg
                 width="16"
@@ -236,7 +260,7 @@ export function Navbar() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-icon-default-primary"
+                className="text-icon-default-primary relative z-10 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-180"
               >
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -258,7 +282,7 @@ export function Navbar() {
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="text-icon-default-primary"
+                className="text-icon-default-primary relative z-10 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-12"
               >
                 <path d="M21 12.79A9 9 0 1 1 11.21 3A7 7 0 0 0 21 12.79z" />
               </svg>
@@ -267,14 +291,15 @@ export function Navbar() {
 
           <button
             onClick={signOut}
-            className="bg-background-actions-error border border-stroke-actions-error-hover p-sm rounded-sm flex items-center justify-center hover:opacity-90 transition-opacity"
+            className="bg-red-500 hover:bg-red-600 border border-red-400 hover:border-red-500 p-sm rounded-xl flex items-center justify-center transition-all duration-300 backdrop-blur-sm relative overflow-hidden group shadow-lg shadow-red-500/25 hover:shadow-xl hover:shadow-red-500/30 transform hover:scale-105 active:scale-95 cursor-pointer"
           >
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <img
               src="/assets/SignOut-icon.svg"
               alt="Sign Out"
               width={16}
               height={16}
-              className="w-4 h-4"
+              className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:scale-110 filter brightness-0 invert"
             />
           </button>
         </div>

@@ -33,16 +33,25 @@ export function ProductUpdates() {
     .filter((u) => u.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <div className="bg-background-card-primary border-r border-stroke-default-primary-v2 flex flex-col h-full overflow-hidden w-1/2 shrink-0">
-      {/* Header */}
-      <div className="flex flex-col gap-md px-lg-2 pt-lg pb-md shrink-0 border-b border-stroke-default-primary-v2">
-        <div className="flex justify-between items-center">
-          <h2 className="text-text-default-primary font-medium text-sm">
-            {activeProduct} | Product updates
-          </h2>
+    <div className="bg-gradient-to-br from-background-app/95 via-background-card-primary/80 to-background-app/90 backdrop-blur-2xl border-r border-stroke-default-primary-v2/30 flex flex-col h-full overflow-hidden w-1/2 shrink-0 relative shadow-xl">
+      {/* Enhanced glow effects */}
+      <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
 
-          {/* Filter Tabs */}
-          <div className="flex gap-sm items-center">
+      {/* Modern Header */}
+      <div className="flex flex-col gap-lg px-xl pt-xl pb-lg shrink-0 relative z-10">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-xs">
+            <h2 className="text-text-default-primary font-black text-xl bg-gradient-to-r from-text-default-primary via-orange-600 to-orange-500 bg-clip-text leading-tight">
+              {activeProduct}
+            </h2>
+            <p className="text-text-default-secondary/70 text-sm font-medium">
+              Product Updates & Progress
+            </p>
+          </div>
+
+          {/* Modern Filter Tabs */}
+          <div className="flex gap-2 items-center p-1 bg-background-card-secondary/50 backdrop-blur-sm rounded-2xl border border-stroke-default-primary/20">
             {STATUS_TABS.map((tab) => {
               const isActive = tab === activeStatusFilter;
               return (
@@ -50,44 +59,77 @@ export function ProductUpdates() {
                   key={tab}
                   onClick={() => setActiveStatusFilter(tab)}
                   className={[
-                    "px-md py-xs rounded-max text-sm font-medium border transition-colors",
+                    "px-4 py-2 rounded-xl text-sm font-bold border transition-all duration-500 relative overflow-hidden group cursor-pointer transform",
                     isActive
-                      ? "bg-background-card-secondary border-stroke-default-inverse text-text-default-primary"
-                      : "bg-background-card-primary border-stroke-default-primary text-text-default-secondary hover:bg-background-card-secondary",
+                      ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-xl shadow-orange-500/30 scale-105"
+                      : "bg-transparent border-transparent text-text-default-secondary hover:bg-background-card-primary/60 hover:text-orange-600 hover:scale-102",
                   ].join(" ")}
                 >
-                  {tab}
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  )}
+                  <span className="relative z-10 tracking-wide">{tab}</span>
+                  {isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  )}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-default-secondary" />
+        {/* Enhanced Search Bar */}
+        <div className="relative group">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-default-secondary transition-all duration-300 group-hover:text-orange-500 group-focus-within:text-orange-500 group-focus-within:scale-110">
+            <Search className="w-5 h-5" />
+          </div>
           <input
             type="text"
-            placeholder="Search updates..."
+            placeholder="Search updates, descriptions, or authors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-9 pr-3 rounded-sm border border-stroke-default-primary bg-background-app text-sm text-text-default-primary placeholder:text-text-default-secondary outline-none focus:border-stroke-default-inverse transition-colors"
+            className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-stroke-default-primary/40 bg-gradient-to-r from-background-app/90 to-background-card-primary/50 backdrop-blur-xl text-sm text-text-default-primary placeholder:text-text-default-secondary/70 outline-none focus:border-orange-500/60 focus:ring-4 focus:ring-orange-500/10 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-orange-500/15 font-medium"
           />
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </div>
 
-      {/* Scrollable list */}
-      <div className="flex flex-col gap-md px-lg-2 pb-lg overflow-y-auto flex-1">
+      {/* Modern border separator */}
+      <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-orange-500/40 to-transparent shrink-0" />
+
+      {/* Enhanced Content Area */}
+      <div className="flex flex-col gap-lg px-xl pb-xl overflow-y-auto flex-1 relative z-10 scroll-smooth">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center flex-1 py-xl gap-sm">
-            <span className="text-2xl">📭</span>
-            <p className="text-sm text-text-default-secondary text-center">
-              No{" "}
-              {activeStatusFilter === "All"
-                ? ""
-                : activeStatusFilter.toLowerCase()}{" "}
-              updates for {activeProduct} yet.
-            </p>
+          <div className="flex flex-col items-center justify-center flex-1 py-2xl gap-lg">
+            <div className="relative">
+              <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-orange-200/80 rounded-3xl flex items-center justify-center mb-4 shadow-xl shadow-orange-500/20 transform rotate-3">
+                <span className="text-5xl transform -rotate-3">📭</span>
+              </div>
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">0</span>
+              </div>
+            </div>
+            <div className="text-center space-y-4 max-w-sm">
+              <h3 className="text-2xl font-black text-text-default-primary bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text">
+                No Updates Found
+              </h3>
+              <p className="text-base text-text-default-secondary/80 leading-relaxed font-medium">
+                No{" "}
+                {activeStatusFilter === "All"
+                  ? ""
+                  : activeStatusFilter.toLowerCase()}{" "}
+                updates for{" "}
+                <span className="text-orange-600 font-bold">
+                  {activeProduct}
+                </span>{" "}
+                yet.
+              </p>
+              <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 to-orange-100/60 rounded-2xl border border-orange-200/50">
+                <p className="text-sm text-orange-800/80 font-semibold">
+                  💡 Try adjusting your filters or search terms
+                </p>
+              </div>
+            </div>
           </div>
         ) : (
           (() => {
@@ -142,14 +184,17 @@ export function ProductUpdates() {
                 }
 
                 return (
-                  <div key={group.dateKey} className="flex flex-col gap-md">
-                    {/* Date separator */}
+                  <div key={group.dateKey} className="flex flex-col gap-lg">
+                    {/* Enhanced Date separator */}
                     <div className="flex items-center gap-md py-sm">
-                      <div className="flex-1 h-px bg-stroke-default-primary-v2" />
-                      <span className="text-xs font-medium text-text-default-secondary bg-background-card-secondary px-md py-1 rounded-max whitespace-nowrap">
-                        {label}
-                      </span>
-                      <div className="flex-1 h-px bg-stroke-default-primary-v2" />
+                      <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-orange-500/30 to-orange-300/20" />
+                      <div className="bg-gradient-to-r from-background-card-secondary to-background-card-primary/80 backdrop-blur-xl px-4 py-2 rounded-xl border border-orange-500/20 shadow-md shadow-orange-500/10 relative group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                        <span className="text-xs font-bold text-text-default-primary bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text whitespace-nowrap tracking-wide relative z-10">
+                          {label}
+                        </span>
+                      </div>
+                      <div className="flex-1 h-0.5 bg-gradient-to-r from-orange-300/20 via-orange-500/30 to-transparent" />
                     </div>
 
                     {group.items.map((update) => (

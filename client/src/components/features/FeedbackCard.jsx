@@ -50,22 +50,22 @@ function ReplyItem({ reply, feedbackId, onDelete }) {
   const canShowDeleteTimer = isReplyAuthor && secondsLeft > 0;
 
   return (
-    <div className="flex flex-col gap-2xs pl-lg border-l-2 border-stroke-default-primary-v2">
+    <div className="flex flex-col gap-2xs pl-lg border-l-2 border-blue-500/30 bg-gradient-to-r from-blue-50/40 to-orange-50/20 rounded-r-2xl py-3 backdrop-blur-sm shadow-lg">
       <div className="flex justify-between items-center">
         <span className="text-xs text-text-default-secondary">
           {reply.authorEmail}
         </span>
         {canShowDeleteTimer && (
           <button
-            className="px-2 py-1 rounded-sm border border-background-actions-error text-xs text-background-actions-error hover:bg-background-actions-error hover:text-white transition-colors font-medium"
+            className="px-2 py-1 rounded-lg border border-red-300 text-xs text-red-600 hover:bg-red-500 hover:text-white transition-all duration-300 font-semibold shadow-sm hover:shadow-md cursor-pointer"
             onClick={() => onDelete(feedbackId, reply.id)}
           >
             Delete ({secondsLeft}s)
           </button>
         )}
       </div>
-      <p className="text-xs text-text-default-secondary">{reply.content}</p>
-      <span className="text-xs text-text-default-secondary opacity-60">
+      <p className="text-sm text-text-default-primary leading-relaxed">{reply.content}</p>
+      <span className="text-xs text-text-default-secondary/70 font-medium">
         {reply.postedDate}
       </span>
     </div>
@@ -141,19 +141,24 @@ export function FeedbackCard({
   return (
     <div
       className={cn(
-        "bg-background-app border border-stroke-default-primary-v2 rounded-sm p-lg flex flex-col gap-md w-full",
+        "bg-gradient-to-br from-background-app/95 to-background-card-primary/80 border border-stroke-default-primary-v2/40 rounded-xl p-lg flex flex-col gap-md w-full backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-[1.005] hover:border-blue-500/30 relative overflow-hidden group",
         className,
       )}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between w-full">
-        <span className="text-sm text-text-default-secondary">
-          {authorEmail}
-        </span>
+      {/* Card glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl" />
+      <div className="absolute -top-40 -left-40 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {/* Enhanced Header */}
+      <div className="flex items-center justify-between w-full relative z-10">
+        <div className="bg-background-card-secondary/80 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-stroke-default-primary/30">
+          <span className="text-xs text-text-default-secondary font-medium">
+            {authorEmail}
+          </span>
+        </div>
         {canShowDeleteTimer && (
           <button
             onClick={() => deleteFeedback(feedbackId)}
-            className="px-2 py-1 rounded-sm border border-background-actions-error text-xs text-background-actions-error hover:bg-background-actions-error hover:text-white transition-colors font-medium"
+            className="px-2.5 py-1 rounded-lg border border-red-400 text-xs text-red-600 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold cursor-pointer shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 bg-red-50/50"
             disabled={!canDelete && !canShowDeleteTimer}
           >
             {canShowDeleteTimer
@@ -165,26 +170,28 @@ export function FeedbackCard({
         )}
       </div>
 
-      {/* Content */}
-      <p className="text-sm text-text-default-secondary w-full whitespace-pre-wrap">
-        {content}
-      </p>
+      {/* Enhanced Content */}
+      <div className="bg-gradient-to-r from-background-card-secondary/30 to-transparent p-3 rounded-lg border border-stroke-default-primary/20 relative z-10">
+        <p className="text-sm text-text-default-secondary/90 w-full whitespace-pre-wrap leading-relaxed font-medium">
+          {content}
+        </p>
+      </div>
 
-      {/* Actions + Date */}
-      <div className="flex flex-wrap gap-2 items-center justify-between w-full">
-        <div className="flex gap-lg items-center">
-          {/* Like */}
+      {/* Enhanced Actions + Date */}
+      <div className="flex flex-wrap gap-3 items-center justify-between w-full relative z-10">
+        <div className="flex gap-4 items-center">
+          {/* Enhanced Like Button */}
           <button
             onClick={() => toggleLike(feedbackId)}
-            className="flex gap-2 items-center group"
+            className="flex gap-2 items-center group cursor-pointer transition-all duration-300 hover:scale-105"
             aria-label={hasLiked ? "Unlike" : "Like"}
           >
             <div
               className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center border transition-colors",
+                "w-8 h-8 rounded-xl flex items-center justify-center border transition-all duration-300 shadow-md hover:shadow-lg transform group-hover:scale-105",
                 hasLiked
-                  ? "bg-background-actions-success-subtle border-stroke-actions-success"
-                  : "bg-background-card-secondary border-stroke-default-primary-v2 group-hover:bg-background-card-primary",
+                  ? "bg-gradient-to-br from-green-100 to-green-200 border-green-400 shadow-green-500/20"
+                  : "bg-gradient-to-br from-background-card-secondary to-background-card-primary border-stroke-default-primary-v2/60 group-hover:border-green-400/50 group-hover:bg-green-50/50",
               )}
             >
               <img
@@ -192,45 +199,54 @@ export function FeedbackCard({
                 alt="Like"
                 width={16}
                 height={16}
-                className="w-4 h-4 dark-invert"
+                className="w-4 h-4 dark-invert transition-transform duration-300 group-hover:scale-110"
               />
             </div>
-            <span className="text-sm font-medium text-text-default-primary">
-              {String(likes).padStart(2, "0")}
-            </span>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-bold text-text-default-primary">
+                {String(likes).padStart(2, "0")}
+              </span>
+              <span className="text-xs text-text-default-secondary/70 font-medium">
+                {hasLiked ? "Liked" : "Like"}
+              </span>
+            </div>
           </button>
 
-          {/* Comments toggle */}
+          {/* Enhanced Comments toggle */}
           <button
             onClick={() => setRepliesOpen((v) => !v)}
-            className="flex gap-2 items-center group"
+            className="flex gap-2 items-center group cursor-pointer transition-all duration-300 hover:scale-105"
           >
-            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-background-card-secondary border border-stroke-default-primary-v2 group-hover:bg-background-card-primary transition-colors">
-              <MessageSquare className="w-4 h-4 text-icon-default-primary" />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-background-card-secondary to-background-card-primary border border-stroke-default-primary-v2/60 group-hover:border-blue-400/50 group-hover:bg-blue-50/50 transition-all duration-300 shadow-md hover:shadow-lg transform group-hover:scale-105">
+              <MessageSquare className="w-4 h-4 text-icon-default-primary transition-transform duration-300 group-hover:scale-110" />
             </div>
-            <span className="text-sm font-medium text-text-default-primary">
-              {String(comments.length).padStart(2, "0")}
-            </span>
-            <span className="text-sm font-medium text-text-default-primary underline decoration-solid flex items-center gap-1">
-              reply
-              {repliesOpen ? (
-                <ChevronUp className="w-3 h-3" />
-              ) : (
-                <ChevronDown className="w-3 h-3" />
-              )}
-            </span>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-bold text-text-default-primary">
+                {String(comments.length).padStart(2, "0")}
+              </span>
+              <span className="text-xs text-blue-600 font-bold flex items-center gap-1">
+                {repliesOpen ? "Hide" : "Reply"}
+                {repliesOpen ? (
+                  <ChevronUp className="w-3 h-3" />
+                ) : (
+                  <ChevronDown className="w-3 h-3" />
+                )}
+              </span>
+            </div>
           </button>
         </div>
 
-        {/* Time */}
-        <span className="text-sm text-text-default-secondary">
-          {postedDate.split(" | ")[0]}
-        </span>
+        {/* Enhanced Time */}
+        <div className="bg-gradient-to-r from-background-card-secondary/80 to-background-card-primary/60 backdrop-blur-xl px-3 py-1.5 rounded-lg border border-stroke-default-primary/30 shadow-md">
+          <span className="text-xs font-bold text-text-default-secondary">
+            {postedDate.split(" | ")[0]}
+          </span>
+        </div>
       </div>
 
       {/* Expandable replies */}
       {repliesOpen && (
-        <div className="flex flex-col gap-md pt-sm border-t border-stroke-default-primary-v2">
+        <div className="flex flex-col gap-md pt-sm border-t border-gradient-to-r from-transparent via-stroke-default-primary-v2/60 to-transparent relative z-10">
           {comments.length > 0 ? (
             <div className="flex flex-col">
               {comments.map((r, index) => (
@@ -241,35 +257,38 @@ export function FeedbackCard({
                     onDelete={deleteReply}
                   />
                   {index < comments.length - 1 && (
-                    <div className="h-px bg-stroke-default-primary-v2 my-sm" />
+                    <div className="h-px bg-gradient-to-r from-transparent via-stroke-default-primary-v2/40 to-transparent my-sm" />
                   )}
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-text-default-secondary opacity-60">
-              No replies yet. Be the first!
-            </p>
+            <div className="text-center py-4">
+              <p className="text-sm text-text-default-secondary/80 font-medium bg-background-card-secondary/30 px-4 py-2 rounded-lg border border-stroke-default-primary/20 inline-block">
+                💬 No replies yet. Be the first!
+              </p>
+            </div>
           )}
 
-          {/* Reply composer - show if user can reply OR is the author */}
+          {/* Enhanced Reply composer */}
           {(canReply || userIsOwner) && (
-            <div className="flex gap-sm items-center">
-              <div className="flex-1 border border-stroke-default-primary rounded-sm flex items-center px-sm h-8 gap-sm">
+            <div className="flex gap-md items-center group">
+              <div className="flex-1 border border-blue-500/40 rounded-xl flex items-center px-4 h-10 gap-3 bg-gradient-to-r from-background-app/90 to-background-card-primary/70 backdrop-blur-xl group-hover:border-blue-500/60 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/15 transition-all duration-300 shadow-md group-hover:shadow-lg relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <input
                   type="text"
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                   onKeyDown={handleReplyKeyDown}
-                  placeholder="Write a reply…"
-                  className="flex-1 bg-transparent outline-none text-xs text-text-default-primary placeholder:text-text-default-secondary"
+                  placeholder="Write a thoughtful reply..."
+                  className="flex-1 bg-transparent outline-none text-sm text-text-default-primary placeholder:text-text-default-secondary/70 font-medium relative z-10"
                 />
                 <button
                   onClick={handleReply}
                   disabled={!replyText.trim()}
-                  className="shrink-0 disabled:opacity-30 transition-opacity"
+                  className="shrink-0 disabled:opacity-40 p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-orange-500/20 hover:from-blue-500 hover:to-orange-500 disabled:hover:from-blue-500/20 disabled:hover:to-orange-500/20 transition-all duration-300 group/send cursor-pointer disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 relative z-10"
                 >
-                  <Send className="w-3.5 h-3.5 text-icon-default-primary" />
+                  <Send className="w-4 h-4 text-blue-600 group-hover/send:text-white transition-all duration-300 group-hover/send:scale-110 group-hover/send:rotate-12 transform" />
                 </button>
               </div>
             </div>
@@ -277,8 +296,10 @@ export function FeedbackCard({
 
           {/* Message for users who cannot reply */}
           {!canReply && !userIsOwner && (
-            <div className="text-xs text-text-default-secondary opacity-60 italic">
-              You don't have access to reply
+            <div className="text-center py-2">
+              <div className="text-sm text-text-default-secondary/70 font-medium bg-background-card-secondary/20 px-4 py-2 rounded-lg border border-stroke-default-primary/20 inline-block">
+                🔒 You don't have access to reply
+              </div>
             </div>
           )}
         </div>
