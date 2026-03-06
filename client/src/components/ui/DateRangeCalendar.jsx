@@ -131,15 +131,15 @@ export function DateRangeCalendar({ startDate, endDate, onRangeChange, onClear }
         }
 
         if (isSelected) {
-            return `${base} bg-brand-primary text-text-brand-on-background font-semibold shadow-sm`;
+            return `${base} bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold shadow-xl shadow-orange-500/30`;
         }
 
         if (inRange && !isSelected) {
-            return `${base} bg-brand-primary/15 text-text-default-primary font-medium`;
+            return `${base} bg-orange-100 text-orange-800 font-medium`;
         }
 
         if (isToday) {
-            return `${base} border-2 border-brand-primary text-brand-primary font-semibold hover:bg-brand-primary/10`;
+            return `${base} border-2 border-orange-500 text-orange-600 font-semibold hover:bg-orange-50`;
         }
 
         return `${base} text-text-default-primary hover:bg-background-card-secondary`;

@@ -149,7 +149,7 @@ export function Navbar() {
               className={[
                 "border p-sm rounded-xl flex items-center justify-center transition-all duration-300 gap-xs backdrop-blur-sm relative overflow-hidden group cursor-pointer",
                 hasFilter
-                  ? "bg-orange-500 border-orange-500 shadow-lg shadow-orange-500/25"
+                  ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 shadow-xl shadow-orange-500/30"
                   : "bg-background-card-primary/80 border-stroke-default-primary/60 hover:bg-background-card-secondary/80 hover:border-orange-500/30 hover:shadow-md",
               ].join(" ")}
             >
@@ -164,7 +164,7 @@ export function Navbar() {
                 className="w-4 h-4 dark-invert relative z-10 transition-transform duration-300 group-hover:scale-110"
               />
               {hasFilter && (
-                <span className="text-xs font-semibold text-text-brand-on-background whitespace-nowrap relative z-10">
+                <span className="text-xs font-semibold text-white whitespace-nowrap relative z-10">
                   {formatRangeLabel()}
                 </span>
               )}
