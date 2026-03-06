@@ -126,7 +126,7 @@ export function Navbar() {
           {activeProduct !== "Neokred" && canPostUpdates && (
             <button
               onClick={() => setIsNewUpdateModalOpen(true)}
-              className="bg-orange-500/90 hover:bg-orange-600/90 text-white px-md py-sm rounded-xl flex items-center gap-xs font-medium text-sm transition-all duration-300 shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/25 transform hover:scale-102 active:scale-98 relative overflow-hidden group border border-orange-400/30 cursor-pointer"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-xl shadow-orange-500/30 px-md py-sm rounded-xl flex items-center gap-xs font-medium text-sm transition-all duration-300 transform hover:scale-102 active:scale-98 relative overflow-hidden group cursor-pointer"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <span className="relative z-10">

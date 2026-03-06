@@ -40,6 +40,7 @@ export function NewUpdateModal() {
   const [status, setStatus] = useState("WIP");
   const [departmentType, setDepartmentType] = useState("Product");
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Pre-fill form when entering edit mode; reset when opening as new
   useEffect(() => {
@@ -76,7 +77,7 @@ export function NewUpdateModal() {
     return e;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) {
@@ -92,12 +93,19 @@ export function NewUpdateModal() {
       departmentType,
     };
 
-    if (isEditing) {
-      updateUpdate(editingUpdate.id, payload);
-    } else {
-      addUpdate(payload);
+    setIsSubmitting(true);
+    try {
+      if (isEditing) {
+        await updateUpdate(editingUpdate.id, payload);
+      } else {
+        await addUpdate(payload);
+      }
+      closeModal();
+    } catch (error) {
+      console.error('Failed to submit update:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-    closeModal();
   };
 
   if (!isNewUpdateModalOpen) return null;
@@ -273,10 +281,19 @@ export function NewUpdateModal() {
                 </button>
                 <button
                   type="submit"
-                  className="px-lg py-sm rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-sm font-bold transition-all duration-300 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 transform hover:scale-105 active:scale-95 relative overflow-hidden group cursor-pointer"
+                  disabled={isSubmitting}
+                  className={cn(
+                    "px-lg py-sm rounded-xl text-white text-sm font-bold transition-all duration-300 shadow-lg transform relative overflow-hidden group",
+                    isSubmitting 
+                      ? "bg-gradient-to-r from-gray-400 to-gray-500 cursor-not-allowed" 
+                      : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:scale-105 active:scale-95 cursor-pointer"
+                  )}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <span className="relative z-10">{isEditing ? "Save Changes" : "Post Update"}</span>
+                  {!isSubmitting && <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />}
+                  <span className="relative z-10 flex items-center gap-xs">
+                    {isSubmitting && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                    {isSubmitting ? "Saving..." : (isEditing ? "Save Changes" : "Post Update")}
+                  </span>
                 </button>
               </div>
             </div>

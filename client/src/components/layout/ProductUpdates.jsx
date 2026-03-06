@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useStore } from "@/lib/store";
 import { matchesDateFilter } from "@/lib/data";
 import { UpdateCard } from "../features/UpdateCard";
+import { SkeletonUpdateList } from "../ui/Skeleton";
 
 const STATUS_TABS = ["All", "WIP", "IN_PROGRESS", "DONE"];
 
@@ -19,6 +20,7 @@ export function ProductUpdates() {
     currentUser,
     dateRangeStart,
     dateRangeEnd,
+    isLoading,
   } = useStore();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -99,7 +101,9 @@ export function ProductUpdates() {
 
       {/* Enhanced Content Area */}
       <div className="flex flex-col gap-lg px-xl pb-xl overflow-y-auto flex-1 relative z-10 scroll-smooth">
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <SkeletonUpdateList count={4} />
+        ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center flex-1 py-2xl gap-lg">
             <div className="relative">
               <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-orange-200/80 rounded-3xl flex items-center justify-center mb-4 shadow-xl shadow-orange-500/20 transform rotate-3">
@@ -109,26 +113,10 @@ export function ProductUpdates() {
                 <span className="text-white text-xs font-bold">0</span>
               </div>
             </div>
-            <div className="text-center space-y-4 max-w-sm">
-              <h3 className="text-2xl font-black text-text-default-primary bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text">
+            <div className="text-center">
+              <h3 className="text-xl font-black text-text-default-primary bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text">
                 No Updates Found
               </h3>
-              <p className="text-base text-text-default-secondary/80 leading-relaxed font-medium">
-                No{" "}
-                {activeStatusFilter === "All"
-                  ? ""
-                  : activeStatusFilter.toLowerCase()}{" "}
-                updates for{" "}
-                <span className="text-orange-600 font-bold">
-                  {activeProduct}
-                </span>{" "}
-                yet.
-              </p>
-              <div className="mt-6 p-4 bg-gradient-to-r from-orange-50 to-orange-100/60 rounded-2xl border border-orange-200/50">
-                <p className="text-sm text-orange-800/80 font-semibold">
-                  💡 Try adjusting your filters or search terms
-                </p>
-              </div>
             </div>
           </div>
         ) : (

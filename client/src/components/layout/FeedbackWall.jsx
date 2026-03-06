@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { matchesDateFilter } from "@/lib/data";
 import { FeedbackCard } from "../features/FeedbackCard";
+import { SkeletonFeedback } from "../ui/Skeleton";
 
 export function FeedbackWall() {
-  const { activeProduct, feedback, addFeedback, dateRangeStart, dateRangeEnd } =
+  const { activeProduct, feedback, addFeedback, dateRangeStart, dateRangeEnd, isLoading } =
     useStore();
 
   const [message, setMessage] = useState("");
@@ -42,7 +43,7 @@ export function FeedbackWall() {
       {/* Enhanced glow effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-orange-500/5 pointer-events-none" />
       <div className="absolute top-0 right-0 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-      
+
       {/* Modern Header */}
       <div className="px-xl py-xl shrink-0 relative z-10">
         <div className="text-center">
@@ -59,7 +60,13 @@ export function FeedbackWall() {
         ref={listRef}
         className="flex flex-col gap-lg px-xl overflow-y-auto flex-1 pb-[120px] relative z-10 scroll-smooth"
       >
-        {productFeedback.length === 0 ? (
+        {isLoading ? (
+          <div className="space-y-lg">
+            {Array.from({ length: 3 }, (_, i) => (
+              <SkeletonFeedback key={i} />
+            ))}
+          </div>
+        ) : productFeedback.length === 0 ? (
           <div className="flex flex-col items-center justify-center flex-1 py-2xl gap-lg">
             <div className="relative">
               <div className="w-28 h-28 bg-gradient-to-br from-blue-100 to-blue-200/80 rounded-3xl flex items-center justify-center mb-6 shadow-xl shadow-blue-500/20 transform -rotate-2">
@@ -69,19 +76,22 @@ export function FeedbackWall() {
                 <span className="text-white text-sm font-bold">+</span>
               </div>
             </div>
-            <div className="text-center space-y-6 max-w-md">
+            <div className="text-center">
               <h3 className="text-3xl font-black text-text-default-primary bg-gradient-to-r from-blue-600 to-orange-600 bg-clip-text">
                 Start the Conversation
               </h3>
               <p className="text-lg text-text-default-secondary/90 leading-relaxed font-medium">
-                No feedback for <span className="text-blue-600 font-bold">{activeProduct}</span> yet.
+                No feedback for{" "}
+                <span className="text-blue-600 font-bold">{activeProduct}</span>{" "}
+                yet.
               </p>
               <div className="bg-gradient-to-r from-blue-50 to-orange-50 p-6 rounded-2xl border border-blue-200/50 shadow-lg">
                 <p className="text-base font-bold text-blue-800 mb-2">
                   ✨ Be the first to share your thoughts!
                 </p>
                 <p className="text-sm text-blue-700/80 leading-relaxed">
-                  Your feedback helps shape the future of {activeProduct}. Share ideas, report issues, or ask questions.
+                  Your feedback helps shape the future of {activeProduct}. Share
+                  ideas, report issues, or ask questions.
                 </p>
               </div>
             </div>
@@ -171,7 +181,7 @@ export function FeedbackWall() {
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background-app/95 to-background-app/80 backdrop-blur-2xl border-t border-blue-500/30 p-lg flex gap-md items-center relative z-20 shadow-xl">
         {/* Enhanced composer glow */}
         <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 via-white/5 to-transparent pointer-events-none" />
-        
+
         {/* Enhanced input field */}
         <div className="flex-1 relative group">
           <div className="absolute -top-[12px] left-4 bg-gradient-to-r from-background-app/95 to-background-card-primary/90 backdrop-blur-xl px-3 py-1 z-10 rounded-lg border border-blue-500/30 shadow-md">
