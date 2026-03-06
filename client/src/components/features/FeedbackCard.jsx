@@ -50,7 +50,7 @@ function ReplyItem({ reply, feedbackId, onDelete }) {
   const canShowDeleteTimer = isReplyAuthor && secondsLeft > 0;
 
   return (
-    <div className="flex flex-col gap-2xs pl-lg border-l-2 border-blue-500/30 bg-gradient-to-r from-blue-50/40 to-orange-50/20 rounded-r-2xl py-3 backdrop-blur-sm shadow-lg">
+    <div className="flex flex-col gap-2xs pl-sm border-l-2 border-blue-500/30 bg-gradient-to-r from-blue-50/40 to-orange-50/20 rounded-r-xl py-2 backdrop-blur-sm shadow-sm">
       <div className="flex justify-between items-center">
         <span className="text-xs text-text-default-secondary">
           {reply.authorEmail}
@@ -141,7 +141,7 @@ export function FeedbackCard({
   return (
     <div
       className={cn(
-        "bg-gradient-to-br from-background-app/95 to-background-card-primary/80 border border-stroke-default-primary-v2/40 rounded-xl p-lg flex flex-col gap-md w-full backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-[1.005] hover:border-blue-500/30 relative overflow-hidden group",
+        "bg-gradient-to-br from-background-app/95 to-background-card-primary/80 border border-stroke-default-primary-v2/40 rounded-xl p-sm flex flex-col gap-xs w-full backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-[1.005] hover:border-blue-500/30 relative overflow-hidden group",
         className,
       )}
     >
@@ -171,15 +171,15 @@ export function FeedbackCard({
       </div>
 
       {/* Enhanced Content */}
-      <div className="bg-gradient-to-r from-background-card-secondary/30 to-transparent p-3 rounded-lg border border-stroke-default-primary/20 relative z-10">
-        <p className="text-sm text-text-default-secondary/90 w-full whitespace-pre-wrap leading-relaxed font-medium">
+      <div className="bg-gradient-to-r from-background-card-secondary/30 to-transparent p-2 rounded-lg border border-stroke-default-primary/20 relative z-10">
+        <p className="text-sm text-text-default-secondary/90 w-full whitespace-pre-wrap leading-snug font-medium">
           {content}
         </p>
       </div>
 
       {/* Enhanced Actions + Date */}
-      <div className="flex flex-wrap gap-3 items-center justify-between w-full relative z-10">
-        <div className="flex gap-4 items-center">
+      <div className="flex flex-wrap gap-2 items-center justify-between w-full relative z-10">
+        <div className="flex gap-3 items-center">
           {/* Enhanced Like Button */}
           <button
             onClick={() => toggleLike(feedbackId)}
@@ -188,7 +188,7 @@ export function FeedbackCard({
           >
             <div
               className={cn(
-                "w-8 h-8 rounded-xl flex items-center justify-center border transition-all duration-300 shadow-md hover:shadow-lg transform group-hover:scale-105",
+                "w-6 h-6 rounded-lg flex items-center justify-center border transition-all duration-300 shadow-sm hover:shadow-md transform group-hover:scale-105",
                 hasLiked
                   ? "bg-gradient-to-br from-green-100 to-green-200 border-green-400 shadow-green-500/20"
                   : "bg-gradient-to-br from-background-card-secondary to-background-card-primary border-stroke-default-primary-v2/60 group-hover:border-green-400/50 group-hover:bg-green-50/50",
@@ -197,13 +197,13 @@ export function FeedbackCard({
               <img
                 src="/assets/like-icon.svg"
                 alt="Like"
-                width={16}
-                height={16}
-                className="w-4 h-4 dark-invert transition-transform duration-300 group-hover:scale-110"
+                width={12}
+                height={12}
+                className="w-3 h-3 dark-invert transition-transform duration-300 group-hover:scale-110"
               />
             </div>
             <div className="flex flex-col items-start">
-              <span className="text-sm font-bold text-text-default-primary">
+              <span className="text-xs font-bold text-text-default-primary">
                 {String(likes).padStart(2, "0")}
               </span>
               <span className="text-xs text-text-default-secondary/70 font-medium">
@@ -217,19 +217,19 @@ export function FeedbackCard({
             onClick={() => setRepliesOpen((v) => !v)}
             className="flex gap-2 items-center group cursor-pointer transition-all duration-300 hover:scale-105"
           >
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-background-card-secondary to-background-card-primary border border-stroke-default-primary-v2/60 group-hover:border-blue-400/50 group-hover:bg-blue-50/50 transition-all duration-300 shadow-md hover:shadow-lg transform group-hover:scale-105">
-              <MessageSquare className="w-4 h-4 text-icon-default-primary transition-transform duration-300 group-hover:scale-110" />
+            <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-gradient-to-br from-background-card-secondary to-background-card-primary border border-stroke-default-primary-v2/60 group-hover:border-blue-400/50 group-hover:bg-blue-50/50 transition-all duration-300 shadow-sm hover:shadow-md transform group-hover:scale-105">
+              <MessageSquare className="w-3 h-3 text-icon-default-primary transition-transform duration-300 group-hover:scale-110" />
             </div>
             <div className="flex flex-col items-start">
-              <span className="text-sm font-bold text-text-default-primary">
+              <span className="text-xs font-bold text-text-default-primary">
                 {String(comments.length).padStart(2, "0")}
               </span>
               <span className="text-xs text-blue-600 font-bold flex items-center gap-1">
                 {repliesOpen ? "Hide" : "Reply"}
                 {repliesOpen ? (
-                  <ChevronUp className="w-3 h-3" />
+                  <ChevronUp className="w-2 h-2" />
                 ) : (
-                  <ChevronDown className="w-3 h-3" />
+                  <ChevronDown className="w-2 h-2" />
                 )}
               </span>
             </div>
@@ -237,7 +237,7 @@ export function FeedbackCard({
         </div>
 
         {/* Enhanced Time */}
-        <div className="bg-gradient-to-r from-background-card-secondary/80 to-background-card-primary/60 backdrop-blur-xl px-3 py-1.5 rounded-lg border border-stroke-default-primary/30 shadow-md">
+        <div className="bg-gradient-to-r from-background-card-secondary/80 to-background-card-primary/60 backdrop-blur-xl px-2 py-1 rounded-lg border border-stroke-default-primary/30 shadow-sm">
           <span className="text-xs font-bold text-text-default-secondary">
             {postedDate.split(" | ")[0]}
           </span>
@@ -246,7 +246,7 @@ export function FeedbackCard({
 
       {/* Expandable replies */}
       {repliesOpen && (
-        <div className="flex flex-col gap-md pt-sm border-t border-gradient-to-r from-transparent via-stroke-default-primary-v2/60 to-transparent relative z-10">
+        <div className="flex flex-col gap-xs pt-xs border-t border-gradient-to-r from-transparent via-stroke-default-primary-v2/60 to-transparent relative z-10">
           {comments.length > 0 ? (
             <div className="flex flex-col">
               {comments.map((r, index) => (
@@ -272,8 +272,8 @@ export function FeedbackCard({
 
           {/* Enhanced Reply composer */}
           {(canReply || userIsOwner) && (
-            <div className="flex gap-md items-center group">
-              <div className="flex-1 border border-blue-500/40 rounded-xl flex items-center px-4 h-10 gap-3 bg-gradient-to-r from-background-app/90 to-background-card-primary/70 backdrop-blur-xl group-hover:border-blue-500/60 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/15 transition-all duration-300 shadow-md group-hover:shadow-lg relative overflow-hidden">
+            <div className="flex gap-xs items-center group">
+              <div className="flex-1 border border-blue-500/40 rounded-lg flex items-center px-3 h-8 gap-2 bg-gradient-to-r from-background-app/90 to-background-card-primary/70 backdrop-blur-xl group-hover:border-blue-500/60 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500/15 transition-all duration-300 shadow-sm group-hover:shadow-md relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <input
                   type="text"
@@ -286,9 +286,9 @@ export function FeedbackCard({
                 <button
                   onClick={handleReply}
                   disabled={!replyText.trim()}
-                  className="shrink-0 disabled:opacity-40 p-2 rounded-lg bg-gradient-to-r from-blue-500/20 to-orange-500/20 hover:from-blue-500 hover:to-orange-500 disabled:hover:from-blue-500/20 disabled:hover:to-orange-500/20 transition-all duration-300 group/send cursor-pointer disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95 relative z-10"
+                  className="shrink-0 disabled:opacity-40 p-1.5 rounded-lg bg-gradient-to-r from-blue-500/20 to-orange-500/20 hover:from-blue-500 hover:to-orange-500 disabled:hover:from-blue-500/20 disabled:hover:to-orange-500/20 transition-all duration-300 group/send cursor-pointer disabled:cursor-not-allowed shadow-sm hover:shadow-md transform hover:scale-105 active:scale-95 relative z-10"
                 >
-                  <Send className="w-4 h-4 text-blue-600 group-hover/send:text-white transition-all duration-300 group-hover/send:scale-110 group-hover/send:rotate-12 transform" />
+                  <Send className="w-3 h-3 text-blue-600 group-hover/send:text-white transition-all duration-300 group-hover/send:scale-110 group-hover/send:rotate-12 transform" />
                 </button>
               </div>
             </div>

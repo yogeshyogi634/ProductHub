@@ -5,9 +5,9 @@ import { api } from "../lib/api";
 const ADMIN_EMAIL = "madhav@neokred.tech";
 
 const ROLE_OPTIONS = [
-    { value: "EMPLOYEE", label: "Employee", color: "bg-blue-500/15 text-blue-300 border-blue-500/30" },
-    { value: "MANAGEMENT", label: "Manager", color: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
-    { value: "ADMIN", label: "Admin", color: "bg-brand-primary/15 text-brand-primary border-brand-primary/30" },
+    { value: "EMPLOYEE", label: "Employee", color: "bg-blue-500/20 text-blue-400 border-blue-500/40 shadow-blue-500/20" },
+    { value: "MANAGEMENT", label: "Manager", color: "bg-purple-500/20 text-purple-400 border-purple-500/40 shadow-purple-500/20" },
+    { value: "ADMIN", label: "Admin", color: "bg-orange-500/20 text-orange-400 border-orange-500/40 shadow-orange-500/20" },
 ];
 
 export default function AdminPage() {
@@ -487,7 +487,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                         value={selectedRole}
                         onChange={(e) => setSelectedRole(e.target.value)}
                         disabled={loading}
-                        className="px-3 py-1.5 bg-background-card-secondary border border-stroke-default-primary rounded-lg text-sm text-text-default-primary focus:outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer"
+                        className="px-3 py-1.5 bg-gradient-to-r from-background-card-secondary/80 to-background-card-primary/50 border border-stroke-default-primary hover:border-orange-500/40 rounded-xl text-sm text-text-default-primary focus:outline-none focus:ring-2 focus:ring-orange-500/30 cursor-pointer transition-all duration-300 hover:scale-105 shadow-md backdrop-blur-sm"
                     >
                         {ROLE_OPTIONS.map((r) => (
                             <option key={r.value} value={r.value}>
@@ -501,7 +501,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                 <button
                     onClick={() => onApprove(selectedRole)}
                     disabled={loading}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative z-20"
+                    className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-sm font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative z-20 backdrop-blur-sm"
                 >
                     {loading ? (
                         <span className="flex items-center gap-1.5">
@@ -520,7 +520,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                 <button
                     onClick={onReject}
                     disabled={loading}
-                    className="px-4 py-2 bg-orange-600/15 hover:bg-orange-600/25 border border-orange-500/25 text-orange-300 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative z-20"
+                    className="px-4 py-2 bg-gradient-to-r from-red-500/20 to-orange-500/20 hover:from-red-500/30 hover:to-orange-500/30 border border-red-500/40 hover:border-red-500/60 text-red-300 hover:text-red-200 text-sm font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-red-500/20 backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative z-20"
                 >
                     Reject
                 </button>
@@ -563,7 +563,7 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
             </td>
             <td className="px-6 py-4">
                 {isAdmin || isSelf ? (
-                    <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium border ${currentRole.color}`}>
+                    <span className={`inline-flex px-3 py-1.5 rounded-xl text-xs font-bold border shadow-lg ${currentRole.color} backdrop-blur-sm`}>
                         {currentRole.label}
                     </span>
                 ) : (
@@ -571,7 +571,7 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                         value={user.role}
                         onChange={(e) => onRoleChange(e.target.value)}
                         disabled={loading}
-                        className={`px-2.5 py-1 rounded-full text-xs font-medium border bg-transparent focus:outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer ${currentRole.color} disabled:opacity-50`}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold border bg-gradient-to-r from-background-card-secondary/80 to-background-card-primary/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-orange-500/30 cursor-pointer transition-all duration-300 hover:scale-105 shadow-lg ${currentRole.color} disabled:opacity-50`}
                     >
                         {ROLE_OPTIONS.map((r) => (
                             <option key={r.value} value={r.value} className="bg-[#1e1e1e] text-white">
@@ -592,13 +592,13 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                             <button
                                 onClick={() => { onRemove(); setConfirmRemove(false); }}
                                 disabled={loading}
-                                className="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+                                className="px-3 py-1 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white text-xs font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-red-500/30 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                             >
                                 Yes
                             </button>
                             <button
                                 onClick={() => setConfirmRemove(false)}
-                                className="px-2.5 py-1 bg-background-card-secondary hover:bg-background-card-primary border border-stroke-default-primary text-text-default-primary text-xs font-medium rounded-md transition-colors cursor-pointer"
+                                className="px-3 py-1 bg-gradient-to-r from-background-card-secondary/80 to-background-card-primary/50 hover:from-background-card-primary to-background-card-secondary border border-stroke-default-primary hover:border-orange-500/40 text-text-default-primary hover:text-orange-300 text-xs font-bold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md backdrop-blur-sm cursor-pointer"
                             >
                                 No
                             </button>
@@ -607,7 +607,7 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                         <button
                             onClick={() => setConfirmRemove(true)}
                             disabled={loading}
-                            className="px-3 py-1.5 bg-orange-600/15 hover:bg-orange-600/25 border border-orange-500/25 text-orange-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                            className="px-3 py-1.5 bg-gradient-to-r from-red-500/20 to-orange-500/20 hover:from-red-500/30 hover:to-orange-500/30 border border-red-500/40 hover:border-red-500/60 text-red-300 hover:text-red-200 text-xs font-bold rounded-xl transition-all duration-300 hover:scale-105 transform shadow-lg shadow-red-500/20 backdrop-blur-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                         >
                             Remove
                         </button>

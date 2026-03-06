@@ -41,19 +41,19 @@ export function ProductUpdates() {
       <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
 
       {/* Modern Header */}
-      <div className="flex flex-col gap-lg px-xl pt-xl pb-lg shrink-0 relative z-10">
+      <div className="flex flex-col gap-sm px-lg pt-lg pb-sm shrink-0 relative z-10">
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-xs">
-            <h2 className="text-text-default-primary font-black text-xl bg-gradient-to-r from-text-default-primary via-orange-600 to-orange-500 bg-clip-text leading-tight">
+            <h2 className="text-text-default-primary font-black text-lg bg-gradient-to-r from-text-default-primary via-orange-600 to-orange-500 bg-clip-text leading-tight">
               {activeProduct}
             </h2>
-            <p className="text-text-default-secondary/70 text-sm font-medium">
+            <p className="text-text-default-secondary/70 text-xs font-medium">
               Product Updates & Progress
             </p>
           </div>
 
           {/* Modern Filter Tabs */}
-          <div className="flex gap-2 items-center p-1 bg-background-card-secondary/50 backdrop-blur-sm rounded-2xl border border-stroke-default-primary/20">
+          <div className="flex gap-1 items-center p-0.5 bg-background-card-secondary/50 backdrop-blur-sm rounded-xl border border-stroke-default-primary/20">
             {STATUS_TABS.map((tab) => {
               const isActive = tab === activeStatusFilter;
               return (
@@ -61,9 +61,9 @@ export function ProductUpdates() {
                   key={tab}
                   onClick={() => setActiveStatusFilter(tab)}
                   className={[
-                    "px-4 py-2 rounded-xl text-sm font-bold border transition-all duration-500 relative overflow-hidden group cursor-pointer transform",
+                    "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all duration-500 relative overflow-hidden group cursor-pointer transform",
                     isActive
-                      ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-xl shadow-orange-500/30 scale-105"
+                      ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-lg shadow-orange-500/30 scale-105"
                       : "bg-transparent border-transparent text-text-default-secondary hover:bg-background-card-primary/60 hover:text-orange-600 hover:scale-102",
                   ].join(" ")}
                 >
@@ -82,17 +82,17 @@ export function ProductUpdates() {
 
         {/* Enhanced Search Bar */}
         <div className="relative group">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-default-secondary transition-all duration-300 group-hover:text-orange-500 group-focus-within:text-orange-500 group-focus-within:scale-110">
-            <Search className="w-5 h-5" />
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-default-secondary transition-all duration-300 group-hover:text-orange-500 group-focus-within:text-orange-500 group-focus-within:scale-110">
+            <Search className="w-4 h-4" />
           </div>
           <input
             type="text"
             placeholder="Search updates, descriptions, or authors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-14 pl-12 pr-4 rounded-2xl border-2 border-stroke-default-primary/40 bg-gradient-to-r from-background-app/90 to-background-card-primary/50 backdrop-blur-xl text-sm text-text-default-primary placeholder:text-text-default-secondary/70 outline-none focus:border-orange-500/60 focus:ring-4 focus:ring-orange-500/10 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-orange-500/15 font-medium"
+            className="w-full h-10 pl-10 pr-3 rounded-xl border border-stroke-default-primary/40 bg-gradient-to-r from-background-app/90 to-background-card-primary/50 backdrop-blur-xl text-sm text-text-default-primary placeholder:text-text-default-secondary/70 outline-none focus:border-orange-500/60 focus:ring-2 focus:ring-orange-500/10 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-orange-500/15 font-medium"
           />
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
       </div>
 
@@ -100,7 +100,7 @@ export function ProductUpdates() {
       <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-orange-500/40 to-transparent shrink-0" />
 
       {/* Enhanced Content Area */}
-      <div className="flex flex-col gap-lg px-xl pb-xl overflow-y-auto flex-1 relative z-10 scroll-smooth">
+      <div className="flex flex-col gap-sm px-lg pb-lg overflow-y-auto flex-1 relative z-10 scroll-smooth">
         {isLoading ? (
           <SkeletonUpdateList count={4} />
         ) : filtered.length === 0 ? (
@@ -172,12 +172,12 @@ export function ProductUpdates() {
                 }
 
                 return (
-                  <div key={group.dateKey} className="flex flex-col gap-lg">
+                  <div key={group.dateKey} className="flex flex-col gap-sm">
                     {/* Enhanced Date separator */}
-                    <div className="flex items-center gap-md py-sm">
+                    <div className="flex items-center gap-sm py-xs">
                       <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-orange-500/30 to-orange-300/20" />
-                      <div className="bg-gradient-to-r from-background-card-secondary to-background-card-primary/80 backdrop-blur-xl px-4 py-2 rounded-xl border border-orange-500/20 shadow-md shadow-orange-500/10 relative group">
-                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                      <div className="bg-gradient-to-r from-background-card-secondary to-background-card-primary/80 backdrop-blur-xl px-3 py-1 rounded-lg border border-orange-500/20 shadow-sm shadow-orange-500/10 relative group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
                         <span className="text-xs font-bold text-text-default-primary bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text whitespace-nowrap tracking-wide relative z-10">
                           {label}
                         </span>

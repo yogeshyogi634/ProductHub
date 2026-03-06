@@ -45,9 +45,9 @@ export function FeedbackWall() {
       <div className="absolute top-0 right-0 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
 
       {/* Modern Header */}
-      <div className="px-xl py-xl shrink-0 relative z-10">
+      <div className="px-lg py-sm shrink-0 relative z-10">
         <div className="text-center">
-          <h2 className="text-text-default-primary font-black text-2xl bg-gradient-to-r from-blue-600 via-text-default-primary to-orange-600 bg-clip-text leading-tight">
+          <h2 className="text-text-default-primary font-black text-lg bg-gradient-to-r from-blue-600 via-text-default-primary to-orange-600 bg-clip-text leading-tight">
             {activeProduct} Feedback Wall
           </h2>
         </div>
@@ -58,10 +58,10 @@ export function FeedbackWall() {
       {/* Enhanced Cards Area */}
       <div
         ref={listRef}
-        className="flex flex-col gap-lg px-xl overflow-y-auto flex-1 pb-[120px] relative z-10 scroll-smooth"
+        className="flex flex-col gap-sm px-lg overflow-y-auto flex-1 pb-[120px] relative z-10 scroll-smooth"
       >
         {isLoading ? (
-          <div className="space-y-lg">
+          <div className="space-y-sm">
             {Array.from({ length: 3 }, (_, i) => (
               <SkeletonFeedback key={i} />
             ))}
@@ -141,12 +141,12 @@ export function FeedbackWall() {
               }
 
               return (
-                <div key={group.dateKey} className="flex flex-col gap-lg">
+                <div key={group.dateKey} className="flex flex-col gap-sm">
                   {/* Enhanced date separator */}
-                  <div className="flex items-center gap-md py-sm">
+                  <div className="flex items-center gap-sm py-xs">
                     <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-blue-500/40 to-blue-300/20" />
-                    <div className="bg-gradient-to-r from-background-card-secondary to-background-card-primary/80 backdrop-blur-xl px-4 py-2 rounded-xl border border-blue-500/20 shadow-md shadow-blue-500/10 relative group">
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                    <div className="bg-gradient-to-r from-background-card-secondary to-background-card-primary/80 backdrop-blur-xl px-3 py-1 rounded-lg border border-blue-500/20 shadow-sm shadow-blue-500/10 relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
                       <span className="text-xs font-bold text-text-default-primary bg-gradient-to-r from-blue-600 to-text-default-primary bg-clip-text whitespace-nowrap tracking-wide relative z-10">
                         {label}
                       </span>
