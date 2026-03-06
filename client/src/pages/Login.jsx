@@ -205,7 +205,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !emailPrefix.trim()}
-              className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/30 transform hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group"
+              className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/30 transform hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {loading ? (

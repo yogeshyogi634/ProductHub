@@ -111,41 +111,47 @@ async function sendOTPEmail(email, name, otpCode) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Your Login OTP</title>
         <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-            .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-            .otp-code { background: #667eea; color: white; font-size: 32px; font-weight: bold; text-align: center; padding: 20px; margin: 20px 0; border-radius: 8px; letter-spacing: 8px; }
-            .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 4px; margin: 20px 0; }
-            .footer { text-align: center; margin-top: 20px; color: #666; font-size: 14px; }
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f5f5f5; }
+            .email-container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+            .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0; }
+            .content { background: #ffffff; padding: 30px; text-align: center; }
+            .content h2 { text-align: left; margin-bottom: 20px; }
+            .content p { text-align: left; margin-bottom: 15px; }
+            .otp-code { background: #667eea; color: white; font-size: 32px; font-weight: bold; text-align: center; padding: 20px; margin: 20px 0; border-radius: 8px; letter-spacing: 8px; display: block; }
+            .warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; }
+            .warning ul { margin: 10px 0; padding-left: 20px; }
+            .footer { text-align: center; padding: 20px; color: #666; font-size: 14px; background-color: #f9f9f9; border-radius: 0 0 8px 8px; }
         </style>
     </head>
     <body>
-        <div class="header">
-            <h1>🔐 Neo Product Hub</h1>
-            <p>Your One-Time Password</p>
-        </div>
-        <div class="content">
-            <h2>Hello ${name || "there"}!</h2>
-            <p>You've requested to sign in to your Neo Product Hub account. Please use the following OTP code to complete your login:</p>
-            
-            <div class="otp-code">${otpCode}</div>
-            
-            <div class="warning">
-                <strong>⚠️ Important:</strong>
-                <ul>
-                    <li>This code is valid for <strong>10 minutes</strong> only</li>
-                    <li>Do not share this code with anyone</li>
-                    <li>If you didn't request this code, please ignore this email</li>
-                </ul>
+        <div class="email-container">
+            <div class="header">
+                <h1>🔐 Neo Product Hub</h1>
+                <p>Your One-Time Password</p>
             </div>
-            
-            <p>If you're having trouble accessing your account, please contact your system administrator.</p>
-            
-            <p>Best regards,<br>The Neo Product Hub Team</p>
-        </div>
-        <div class="footer">
-            <p>This is an automated message. Please do not reply to this email.</p>
-            <p>&copy; ${new Date().getFullYear()} Neokred Technologies. All rights reserved.</p>
+            <div class="content">
+                <h2>Hello ${name || "there"}!</h2>
+                <p>You've requested to sign in to your Neo Product Hub account. Please use the following OTP code to complete your login:</p>
+                
+                <div class="otp-code">${otpCode}</div>
+                
+                <div class="warning">
+                    <strong>⚠️ Important:</strong>
+                    <ul>
+                        <li>This code is valid for <strong>10 minutes</strong> only</li>
+                        <li>Do not share this code with anyone</li>
+                        <li>If you didn't request this code, please ignore this email</li>
+                    </ul>
+                </div>
+                
+                <p>If you're having trouble accessing your account, please contact your system administrator.</p>
+                
+                <p>Best regards,<br>The Neo Product Hub Team</p>
+            </div>
+            <div class="footer">
+                <p>This is an automated message. Please do not reply to this email.</p>
+                <p>&copy; ${new Date().getFullYear()} Neokred Technologies. All rights reserved.</p>
+            </div>
         </div>
     </body>
     </html>

@@ -131,11 +131,14 @@ export default function SignupPage() {
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--color-brand-primary)/5,_transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--color-brand-primary)/3,_transparent_50%)]" />
-      
+
       {/* Animated gradient accent */}
       <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 animate-pulse" />
 
-      <div className="w-full max-w-md relative z-10" style={{ minWidth: "400px" }}>
+      <div
+        className="w-full max-w-md relative z-10"
+        style={{ minWidth: "400px" }}
+      >
         {/* Logo / Brand */}
         <div className="text-center mb-8">
           <div
@@ -171,8 +174,18 @@ export default function SignupPage() {
             {error && (
               <div className="bg-gradient-to-r from-red-50 to-red-100/50 border border-red-200/80 text-red-800 px-4 py-3 rounded-xl text-sm font-medium shadow-sm backdrop-blur-sm">
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  <svg
+                    className="w-4 h-4 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
                   </svg>
                   {error}
                 </div>
@@ -201,9 +214,11 @@ export default function SignupPage() {
                   <label className="block text-sm font-semibold text-text-default-primary mb-2">
                     Email Address
                   </label>
-                  <div className={`flex rounded-xl shadow-lg shadow-black/5 group-hover:shadow-orange-500/10 transition-all duration-300 ${
-                    emailError ? 'ring-2 ring-red-200' : ''
-                  }`}>
+                  <div
+                    className={`flex rounded-xl shadow-lg shadow-black/5 group-hover:shadow-orange-500/10 transition-all duration-300 ${
+                      emailError ? "ring-2 ring-red-200" : ""
+                    }`}
+                  >
                     <input
                       type="text"
                       value={emailPrefix}
@@ -294,8 +309,18 @@ export default function SignupPage() {
               <div className="space-y-6">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
-                    <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.83 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="w-8 h-8 text-orange-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 8l7.89 7.89a2 2 0 002.83 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                   </div>
                   <h3 className="text-lg font-bold text-text-default-primary mb-2">
@@ -308,12 +333,12 @@ export default function SignupPage() {
                     </span>
                   </p>
                 </div>
-                
-                <div className="group">
-                  <label className="block text-sm font-semibold text-text-default-primary mb-2">
-                    Verification Code
-                  </label>
-                  <div className="relative">
+
+                <div className="space-y-4">
+                  <div className="group">
+                    <label className="block text-sm font-semibold text-text-default-primary mb-2">
+                      Verification Code
+                    </label>
                     <input
                       type="text"
                       value={otp}
@@ -324,12 +349,14 @@ export default function SignupPage() {
                       maxLength={6}
                       className="w-full px-4 py-3.5 bg-white/80 backdrop-blur-sm border border-stroke-default-primary rounded-xl text-text-default-primary placeholder-text-default-secondary/60 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 transition-all duration-300 hover:bg-white/90 shadow-lg shadow-black/5 group-hover:shadow-orange-500/10 tracking-widest text-center text-lg font-mono"
                     />
+                  </div>
+                  <div className="text-center">
                     <button
                       type="button"
                       onClick={() => setStep("details")}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-orange-500 hover:text-orange-600 font-semibold transition-all duration-300 hover:underline underline-offset-2"
+                      className="text-sm text-orange-500 hover:text-orange-600 font-semibold transition-all duration-300 hover:underline underline-offset-2 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-lg border border-orange-200"
                     >
-                      Edit Details
+                      ← Edit Details
                     </button>
                   </div>
                 </div>
@@ -343,7 +370,7 @@ export default function SignupPage() {
                 loading ||
                 (step === "details" && (!!emailError || !emailPrefix.trim()))
               }
-              className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/30 transform hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group mt-6"
+              className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/30 transform hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group mt-6"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {loading ? (
@@ -365,14 +392,14 @@ export default function SignupPage() {
                     />
                   </svg>
                   <span className="font-semibold">
-                    {step === "details"
-                      ? "Sending Code…"
-                      : "Creating Account…"}
+                    {step === "details" ? "Sending Code…" : "Creating Account…"}
                   </span>
                 </span>
               ) : (
                 <span className="relative z-10 text-lg">
-                  {step === "details" ? "Send Verification Code" : "Create Account"}
+                  {step === "details"
+                    ? "Send Verification Code"
+                    : "Create Account"}
                 </span>
               )}
             </button>
@@ -406,7 +433,7 @@ export default function SignupPage() {
       {/* Admin Approval Popup */}
       {showApprovalPopup && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-in fade-in duration-300">
-          <div className="bg-white/95 backdrop-blur-xl border border-stroke-default-primary/50 rounded-2xl p-8 shadow-2xl max-w-md w-full transform animate-in zoom-in-95 duration-300">
+          <div className="bg-white/95 backdrop-blur-xl border border-stroke-default-primary/50 rounded-2xl p-8 shadow-2xl  transform animate-in zoom-in-95 duration-300">
             <div className="text-center">
               {/* Success Icon with animation */}
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-orange-100 to-orange-200 mb-6 animate-bounce">
@@ -430,13 +457,24 @@ export default function SignupPage() {
               </h3>
 
               <p className="text-text-default-secondary text-base mb-6 leading-relaxed">
-                Your account has been created successfully. Our admin team will review and approve your request shortly.
+                Your account has been created successfully. Our admin team will
+                review and approve your request shortly.
               </p>
 
               <div className="bg-gradient-to-r from-orange-50 to-orange-100/50 border border-orange-200/80 rounded-xl p-4 mb-6">
                 <p className="text-orange-800 text-sm font-semibold flex items-center justify-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 7.89a2 2 0 002.83 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 8l7.89 7.89a2 2 0 002.83 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
                   </svg>
                   We'll notify you via email once approved
                 </p>
@@ -447,7 +485,9 @@ export default function SignupPage() {
                 className="w-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl transition-all duration-300 shadow-xl shadow-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/30 transform hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative z-10 text-lg">Perfect! Take me to login</span>
+                <span className="relative z-10 text-lg">
+                  Perfect! Take me to login
+                </span>
               </button>
             </div>
           </div>

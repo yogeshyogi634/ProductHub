@@ -166,38 +166,49 @@ export default function AdminPage() {
     }
 
     return (
-        <div className="min-h-screen bg-background-app">
+        <div className="min-h-screen bg-gradient-to-br from-background-app/95 via-background-card-primary/80 to-background-app/90 backdrop-blur-2xl relative overflow-hidden">
+            {/* Enhanced background effects */}
+            <div className="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-blue-500/5 pointer-events-none" />
+            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+
             {/* Header */}
-            <div className="border-b border-stroke-default-primary bg-background-card-primary">
-                <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+            <div className="border-b border-stroke-default-primary-v2/30 bg-gradient-to-r from-background-card-primary/80 to-background-card-secondary/60 backdrop-blur-xl shadow-xl relative z-10">
+                <div className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
                         <Link
                             to="/"
-                            className="flex items-center gap-2 text-text-default-secondary hover:text-text-default-primary transition-colors"
+                            className="flex items-center gap-3 text-text-default-secondary hover:text-orange-600 transition-all duration-300 group"
                         >
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M19 12H5" />
-                                <polyline points="12 19 5 12 12 5" />
-                            </svg>
-                            <span className="text-sm">Back to Dashboard</span>
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-orange-100/20 to-orange-200/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:text-orange-600 transition-colors duration-300">
+                                    <path d="M19 12H5" />
+                                    <polyline points="12 19 5 12 12 5" />
+                                </svg>
+                            </div>
+                            <span className="font-medium">Back to Dashboard</span>
                         </Link>
-                        <div className="w-px h-6 bg-stroke-default-primary" />
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-brand-primary/20 flex items-center justify-center">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-brand-primary">
+                        <div className="w-px h-8 bg-gradient-to-b from-transparent via-stroke-default-primary to-transparent" />
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center shadow-lg shadow-orange-500/20">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-600">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                                 </svg>
                             </div>
-                            <h1 className="text-lg font-semibold text-text-default-primary">Admin Panel</h1>
+                            <div className="flex flex-col">
+                                <h1 className="text-2xl font-black bg-gradient-to-r from-text-default-primary via-orange-600 to-orange-500 bg-clip-text leading-tight">Admin Panel</h1>
+                                <p className="text-text-default-secondary/70 text-sm font-medium">User Management & Analytics</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Content */}
-            <div className="max-w-6xl mx-auto px-6 py-8">
+            <div className="max-w-6xl mx-auto px-6 py-12 relative z-10">
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-3 gap-6 mb-12">
                     <StatCard
                         label="Pending Approvals"
                         value={pendingUsers.length}
@@ -218,39 +229,66 @@ export default function AdminPage() {
                     />
                 </div>
 
-                {/* Tabs */}
-                <div className="flex gap-1 mb-6 bg-background-card-primary p-1 rounded-xl border border-stroke-default-primary w-fit">
+                {/* Enhanced Tabs */}
+                <div className="flex gap-2 items-center p-2 bg-gradient-to-r from-background-card-secondary/50 to-background-card-primary/50 backdrop-blur-xl rounded-2xl border border-stroke-default-primary/20 shadow-xl shadow-orange-500/10 w-fit mb-10">
                     <button
                         onClick={() => setTab("pending")}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "pending"
-                            ? "bg-brand-primary text-black shadow-sm"
-                            : "text-text-default-secondary hover:text-text-default-primary"
-                            }`}
+                        className={`px-6 py-3 rounded-xl font-bold border transition-all duration-500 relative overflow-hidden group cursor-pointer transform ${
+                            tab === "pending"
+                                ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-xl shadow-orange-500/30 scale-105"
+                                : "bg-transparent border-transparent text-text-default-secondary hover:bg-background-card-primary/60 hover:text-orange-600 hover:scale-102"
+                        }`}
                     >
-                        Pending Approvals
-                        {pendingUsers.length > 0 && (
-                            <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-500/20 text-red-300 text-xs font-bold">
-                                {pendingUsers.length}
-                            </span>
+                        {tab !== "pending" && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                        )}
+                        <span className="relative z-10 tracking-wide flex items-center gap-2">
+                            Pending Approvals
+                            {pendingUsers.length > 0 && (
+                                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
+                                    tab === "pending" 
+                                        ? "bg-white/20 text-white" 
+                                        : "bg-red-500/20 text-red-300"
+                                }`}>
+                                    {pendingUsers.length}
+                                </span>
+                            )}
+                        </span>
+                        {tab === "pending" && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                         )}
                     </button>
                     <button
                         onClick={() => setTab("all")}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "all"
-                            ? "bg-brand-primary text-black shadow-sm"
-                            : "text-text-default-secondary hover:text-text-default-primary"
-                            }`}
+                        className={`px-6 py-3 rounded-xl font-bold border transition-all duration-500 relative overflow-hidden group cursor-pointer transform ${
+                            tab === "all"
+                                ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-xl shadow-orange-500/30 scale-105"
+                                : "bg-transparent border-transparent text-text-default-secondary hover:bg-background-card-primary/60 hover:text-orange-600 hover:scale-102"
+                        }`}
                     >
-                        All Users
+                        {tab !== "all" && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                        )}
+                        <span className="relative z-10 tracking-wide">All Users</span>
+                        {tab === "all" && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                        )}
                     </button>
                     <button
                         onClick={() => setTab("logs")}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === "logs"
-                            ? "bg-brand-primary text-black shadow-sm"
-                            : "text-text-default-secondary hover:text-text-default-primary"
-                            }`}
+                        className={`px-6 py-3 rounded-xl font-bold border transition-all duration-500 relative overflow-hidden group cursor-pointer transform ${
+                            tab === "logs"
+                                ? "bg-gradient-to-r from-orange-500 to-orange-600 border-orange-400 text-white shadow-xl shadow-orange-500/30 scale-105"
+                                : "bg-transparent border-transparent text-text-default-secondary hover:bg-background-card-primary/60 hover:text-orange-600 hover:scale-102"
+                        }`}
                     >
-                        Activity Logs
+                        {tab !== "logs" && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                        )}
+                        <span className="relative z-10 tracking-wide">Activity Logs</span>
+                        {tab === "logs" && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                        )}
                     </button>
                 </div>
 
@@ -275,7 +313,7 @@ export default function AdminPage() {
 
                 {/* All Users Tab */}
                 {tab === "all" && (
-                    <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl overflow-hidden">
+                    <div className="bg-gradient-to-br from-background-card-primary/90 to-background-card-secondary/50 border border-stroke-default-primary-v2/30 rounded-2xl overflow-hidden shadow-xl shadow-orange-500/10 backdrop-blur-xl">
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-stroke-default-primary">
@@ -312,7 +350,7 @@ export default function AdminPage() {
 
                 {/* Logs Tab */}
                 {tab === "logs" && (
-                    <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl overflow-hidden">
+                    <div className="bg-gradient-to-br from-background-card-primary/90 to-background-card-secondary/50 border border-stroke-default-primary-v2/30 rounded-2xl overflow-hidden shadow-xl shadow-orange-500/10 backdrop-blur-xl">
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-stroke-default-primary">
@@ -381,11 +419,14 @@ export default function AdminPage() {
 
 function StatCard({ label, value, color, bgColor }) {
     return (
-        <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl p-5">
-            <p className="text-text-default-secondary text-sm mb-1">{label}</p>
-            <div className="flex items-center gap-2">
-                <span className={`text-3xl font-bold ${color}`}>{value}</span>
-                <div className={`w-2.5 h-2.5 rounded-full ${bgColor}`} />
+        <div className="bg-gradient-to-br from-background-card-primary/90 to-background-card-secondary/50 border border-stroke-default-primary-v2/30 rounded-2xl p-6 shadow-xl shadow-orange-500/5 hover:shadow-orange-500/15 transition-all duration-500 group hover:scale-105 relative overflow-hidden backdrop-blur-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative z-10">
+                <p className="text-text-default-secondary/80 text-sm mb-3 font-medium tracking-wide">{label}</p>
+                <div className="flex items-center gap-3">
+                    <span className={`text-4xl font-black ${color} group-hover:scale-110 transition-transform duration-300`}>{value}</span>
+                    <div className={`w-3 h-3 rounded-full ${bgColor} shadow-lg group-hover:animate-pulse`} />
+                </div>
             </div>
         </div>
     );
@@ -393,14 +434,17 @@ function StatCard({ label, value, color, bgColor }) {
 
 function EmptyState({ message, description }) {
     return (
-        <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl p-12 text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center mb-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-brand-primary">
-                    <polyline points="20 6 9 17 4 12" />
-                </svg>
+        <div className="bg-gradient-to-br from-background-card-primary/90 to-background-card-secondary/50 border border-stroke-default-primary-v2/30 rounded-2xl p-16 text-center shadow-xl shadow-orange-500/10 backdrop-blur-xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-50" />
+            <div className="relative z-10">
+                <div className="mx-auto w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-100/20 to-orange-200/20 flex items-center justify-center mb-6 shadow-xl shadow-orange-500/20 transform rotate-3">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-orange-600 transform -rotate-3">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                </div>
+                <p className="text-xl font-black text-text-default-primary bg-gradient-to-r from-text-default-primary to-orange-600 bg-clip-text mb-2">{message}</p>
+                <p className="text-text-default-secondary/70 font-medium">{description}</p>
             </div>
-            <p className="text-text-default-primary font-medium mb-1">{message}</p>
-            <p className="text-text-default-secondary text-sm">{description}</p>
         </div>
     );
 }
@@ -409,7 +453,8 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
     const [selectedRole, setSelectedRole] = useState("EMPLOYEE");
 
     return (
-        <div className="bg-background-card-primary border border-stroke-default-primary rounded-xl p-5 flex items-center justify-between gap-4">
+        <div className="bg-gradient-to-br from-background-card-primary/90 to-background-card-secondary/50 border border-stroke-default-primary-v2/30 rounded-2xl p-6 flex items-center justify-between gap-6 shadow-xl shadow-orange-500/5 hover:shadow-orange-500/15 transition-all duration-500 group hover:scale-105 relative overflow-hidden backdrop-blur-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="flex items-center gap-4 flex-1 min-w-0">
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-full bg-brand-primary/20 flex items-center justify-center flex-shrink-0">
@@ -434,7 +479,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-3 flex-shrink-0 relative z-10">
                 {/* Role selector */}
                 <div className="flex flex-col gap-1">
                     <label className="text-xs text-text-default-secondary">Assign role:</label>
@@ -442,7 +487,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                         value={selectedRole}
                         onChange={(e) => setSelectedRole(e.target.value)}
                         disabled={loading}
-                        className="px-3 py-1.5 bg-background-card-secondary border border-stroke-default-primary rounded-lg text-sm text-text-default-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                        className="px-3 py-1.5 bg-background-card-secondary border border-stroke-default-primary rounded-lg text-sm text-text-default-primary focus:outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer"
                     >
                         {ROLE_OPTIONS.map((r) => (
                             <option key={r.value} value={r.value}>
@@ -456,7 +501,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                 <button
                     onClick={() => onApprove(selectedRole)}
                     disabled={loading}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative z-20"
                 >
                     {loading ? (
                         <span className="flex items-center gap-1.5">
@@ -475,7 +520,7 @@ function PendingUserCard({ user, loading, onApprove, onReject }) {
                 <button
                     onClick={onReject}
                     disabled={loading}
-                    className="px-4 py-2 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 text-red-300 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-orange-600/15 hover:bg-orange-600/25 border border-orange-500/25 text-orange-300 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer relative z-20"
                 >
                     Reject
                 </button>
@@ -543,17 +588,17 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                 {!isAdmin && !isSelf && (
                     confirmRemove ? (
                         <div className="flex items-center justify-end gap-2">
-                            <span className="text-xs text-red-300">Remove?</span>
+                            <span className="text-xs text-orange-300">Remove?</span>
                             <button
                                 onClick={() => { onRemove(); setConfirmRemove(false); }}
                                 disabled={loading}
-                                className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50"
+                                className="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
                             >
                                 Yes
                             </button>
                             <button
                                 onClick={() => setConfirmRemove(false)}
-                                className="px-2.5 py-1 bg-white/10 hover:bg-white/15 text-white/70 text-xs font-medium rounded-md transition-colors"
+                                className="px-2.5 py-1 bg-background-card-secondary hover:bg-background-card-primary border border-stroke-default-primary text-text-default-primary text-xs font-medium rounded-md transition-colors cursor-pointer"
                             >
                                 No
                             </button>
@@ -562,7 +607,7 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                         <button
                             onClick={() => setConfirmRemove(true)}
                             disabled={loading}
-                            className="px-3 py-1.5 bg-red-600/15 hover:bg-red-600/25 border border-red-500/25 text-red-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                            className="px-3 py-1.5 bg-orange-600/15 hover:bg-orange-600/25 border border-orange-500/25 text-orange-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
                         >
                             Remove
                         </button>
