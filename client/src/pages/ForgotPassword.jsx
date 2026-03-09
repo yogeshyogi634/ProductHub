@@ -184,7 +184,7 @@ export default function ForgotPasswordPage() {
           {!sent && (
             <div className="mt-6 pt-6 border-t border-stroke-default-primary text-center">
               <p className="text-text-default-secondary text-sm">
-                Remember your password?{" "}
+                Remember your password?
                 <Link
                   to="/login"
                   className="text-brand-primary hover:opacity-80 font-medium transition-colors"
