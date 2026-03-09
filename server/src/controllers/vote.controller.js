@@ -1,5 +1,5 @@
-const prisma = require("../utils/prisma");
-const { success, error } = require("../utils/response");
+import prisma from "../utils/prisma.js";
+import { success, error } from "../utils/response.js";
 
 /**
  * POST /api/votes
@@ -113,4 +113,4 @@ async function removeVote(req, res, next) {
   }
 }
 
-module.exports = { castVote, removeVote };
+export { castVote, removeVote };

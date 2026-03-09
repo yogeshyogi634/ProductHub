@@ -1,24 +1,40 @@
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const { errorHandler, notFound } = require("./middleware/error.middleware");
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { errorHandler, notFound } from "./middleware/error.middleware.js";
 
 // Import routes
-const authRoutes = require("./routes/auth.routes");
-const productRoutes = require("./routes/product.routes");
-const updateRoutes = require("./routes/update.routes");
-const voteRoutes = require("./routes/vote.routes");
-const feedbackRoutes = require("./routes/feedback.routes");
-const replyRoutes = require("./routes/reply.routes");
+import authRoutes from "./routes/auth.routes.js";
+import productRoutes from "./routes/product.routes.js";
+import updateRoutes from "./routes/update.routes.js";
+import voteRoutes from "./routes/vote.routes.js";
+import feedbackRoutes from "./routes/feedback.routes.js";
+import replyRoutes from "./routes/reply.routes.js";
 
 const app = express();
 
 // ─── Global Middleware ───
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true, // allow cookies
-  })
+  }),
 );
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -45,4 +61,4 @@ app.use("/api/replies", replyRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

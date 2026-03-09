@@ -4,38 +4,44 @@ generator client {
 
 datasource db {
   provider = "mongodb"
-  url      = env("DATABASE_URL")
+  url      = env("MONGO_URL")
 }
 
 // ─── Users ───
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String?
-  avatarUrl String?
-  role      Role     @default(MEMBER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  name         String?
+  password     String? // Hashed password
+  department   String?
+  avatarUrl    String?
+  role         Role     @default(EMPLOYEE)
+  isVerified   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  updates   Update[]
-  votes     Vote[]
-  feedbacks Feedback[]
-  replies   Reply[]
+  updates       Update[]
+  votes         Vote[]
+  feedbacks     Feedback[]
+  replies       Reply[]
+  otps          OTP[]
+  statusHistory UpdateStatusHistory[]
+
+  // Admin Logs
+  logsTargeted  AdminLog[] @relation("TargetUser")
+  logsCreated   AdminLog[] @relation("AdminUser")
 }
 
 enum Role {
   ADMIN
-  MEMBER
+  MANAGEMENT
+  EMPLOYEE
 }
 
 // ─── Products (5 internal products) ───
 model Product {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
-  slug      String   @unique
-  icon      String
-  color     String?
-  order     Int      @default(0)
   createdAt DateTime @default(now())
 
   updates   Update[]
@@ -53,17 +59,19 @@ model Update {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
-  product Product @relation(fields: [productId], references: [id])
-  author  User    @relation(fields: [authorId], references: [id])
-  votes   Vote[]
+  product       Product              @relation(fields: [productId], references: [id])
+  author        User?                @relation(fields: [authorId], references: [id])
+  votes         Vote[]
+  statusHistory UpdateStatusHistory[]
 }
 
 enum UpdateStatus {
   WIP
+  IN_PROGRESS
   DONE
-  PLANNED
   SHIPPED
-  DEPRECATED
+  Completed
+  Backlog
 }
 
 // ─── Votes (upvote/downvote) ───
@@ -85,18 +93,35 @@ enum VoteType {
   DOWN
 }
 
+// ─── Update Status History ───
+model UpdateStatusHistory {
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  updateId  String       @db.ObjectId
+  fromStatus UpdateStatus?
+  toStatus  UpdateStatus
+  changedBy String       @db.ObjectId
+  reason    String?
+  createdAt DateTime     @default(now())
+
+  update Update @relation(fields: [updateId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [changedBy], references: [id])
+
+  @@index([updateId, createdAt])
+}
+
 // ─── Feedback Wall ───
 model Feedback {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  message     String
-  isAnonymous Boolean  @default(true)
-  productId   String   @db.ObjectId
-  authorId    String   @db.ObjectId
-  createdAt   DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  message   String
+  productId String   @db.ObjectId
+  authorId  String   @db.ObjectId
+  createdAt DateTime @default(now())
 
   product Product @relation(fields: [productId], references: [id])
-  author  User    @relation(fields: [authorId], references: [id])
+  author  User?    @relation(fields: [authorId], references: [id])
   replies Reply[]
+
+  @@index([productId, createdAt])
 }
 
 // ─── Replies to Feedback ───
@@ -108,5 +133,49 @@ model Reply {
   createdAt  DateTime @default(now())
 
   feedback Feedback @relation(fields: [feedbackId], references: [id])
-  author   User     @relation(fields: [authorId], references: [id])
+  author   User?     @relation(fields: [authorId], references: [id])
+
+  @@index([feedbackId, createdAt])
+}
+
+// ─── OTP for Authentication ───
+model OTP {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  code      String
+  userId    String?  @db.ObjectId
+  attempts  Int      @default(0)
+  expiresAt DateTime
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email, isUsed, expiresAt])
+}
+
+// ─── Admin Activity Logs ───
+model AdminLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  action      String   // "APPROVE", "REJECT", "REMOVE", "ROLE_CHANGE"
+  targetId    String?  @db.ObjectId
+  targetName  String?  // Snapshot of name in case user is deleted
+  targetEmail String?  // Snapshot of email in case user is deleted
+  adminId     String?  @db.ObjectId
+  details     String?  // e.g., "Role changed from EMPLOYEE to MANAGER"
+  createdAt   DateTime @default(now())
+  
+  // Set null on delete, or cascade if you want to lose history
+  // For audit logs, usually we keep history even if user is deleted, 
+  // but Prisma requires relation existence unless optional.
+  // Best practice: Make relation optional OR use onDelete: SetNull (if field nullable) 
+  // OR keep the log but make the relation disconnected?
+  // Prisma/Mongo doesn't support SetNull on list relations easily sometimes.
+  // Given user wants to "remove" user, let's keep logs but maybe make the relation optional?
+  // Actually, for simplicity and ensuring deletion works now:
+  
+  targetUser  User?    @relation("TargetUser", fields: [targetId], references: [id], onDelete: SetNull)
+  adminUser   User?    @relation("AdminUser", fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
 }

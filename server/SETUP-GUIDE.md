@@ -195,7 +195,7 @@ You should see:
   ✅ Product: Approvals
   ✅ Product: Sync Engine
   ✅ Product: Settings
-  ✅ Admin user: admin@neokred.tech
+  ✅ Admin user: madhav@neokred.tech
   ✅ Member user: madhav@neokred.tech
   ✅ Sample update: Payment Integration on Collectbot
   ✅ Sample feedback: "New UI is good!"

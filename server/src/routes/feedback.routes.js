@@ -1,14 +1,20 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { protect } = require("../middleware/auth.middleware");
-const {
+import { protect, restrictTo } from "../middleware/auth.middleware.js";
+import {
   getFeedback,
   createFeedback,
   deleteFeedback,
-} = require("../controllers/feedback.controller");
+  getCurrentUser,
+  getFeedbackCalendar,
+  getFeedbackDateRange,
+} from "../controllers/feedback.controller.js";
 
+router.get("/me", protect, getCurrentUser);
+router.get("/calendar", protect, getFeedbackCalendar);
+router.get("/date-range", protect, getFeedbackDateRange);
 router.get("/", protect, getFeedback);
 router.post("/", protect, createFeedback);
-router.delete("/:id", protect, deleteFeedback);
+router.delete("/:id", protect, restrictTo("ADMIN", "MANAGEMENT"), deleteFeedback);
 
-module.exports = router;
+export default router;

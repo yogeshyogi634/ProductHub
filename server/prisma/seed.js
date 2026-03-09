@@ -1,4 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -7,79 +7,61 @@ async function main() {
 
   // ─── Create 5 Products ───
   const products = [
+    "Perkle",
+    "Blutic", 
+    "Collectbot",
+    "ProfileX",
+    "Svitch",
+    "Neokred"
+  ];
+
+  for (const productName of products) {
+    await prisma.product.upsert({
+      where: { name: productName },
+      update: { name: productName },
+      create: { name: productName },
+    });
+    console.log(`  ✅ Product: ${productName}`);
+  }
+
+  // ─── Create management users ───
+  const managementUsers = [
     {
-      name: "Perkle",
-      slug: "perkle",
-      icon: "flame",
-      color: "#F97316",
-      order: 0,
+      email: "cto@neokred.tech", 
+      name: "CTO",
+      role: "MANAGEMENT",
     },
     {
-      name: "Collectbot",
-      slug: "collectbot",
-      icon: "code",
-      color: "#22C55E",
-      order: 1,
-    },
-    {
-      name: "Approvals",
-      slug: "approvals",
-      icon: "check-circle",
-      color: "#3B82F6",
-      order: 2,
-    },
-    {
-      name: "Sync Engine",
-      slug: "sync-engine",
-      icon: "refresh-cw",
-      color: "#8B5CF6",
-      order: 3,
-    },
-    {
-      name: "Settings",
-      slug: "settings",
-      icon: "settings",
-      color: "#EF4444",
-      order: 4,
+      email: "manager1@neokred.tech",
+      name: "Manager One",
+      role: "MANAGEMENT",
     },
   ];
 
-  for (const product of products) {
-    await prisma.product.upsert({
-      where: { slug: product.slug },
-      update: product,
-      create: product,
+  for (const mgmtUser of managementUsers) {
+    const user = await prisma.user.upsert({
+      where: { email: mgmtUser.email },
+      update: {},
+      create: mgmtUser,
     });
-    console.log(`  ✅ Product: ${product.name}`);
+    console.log(`  ✅ Management user: ${user.email}`);
   }
 
-  // ─── Create a test admin user ───
-  const adminUser = await prisma.user.upsert({
-    where: { email: "admin@neokred.tech" },
-    update: {},
-    create: {
-      email: "admin@neokred.tech",
-      name: "Admin",
-      role: "ADMIN",
-    },
-  });
-  console.log(`  ✅ Admin user: ${adminUser.email}`);
-
-  // ─── Create a test member user ───
-  const memberUser = await prisma.user.upsert({
+  // ─── Create a test employee user ───
+  const employeeUser = await prisma.user.upsert({
     where: { email: "madhav@neokred.tech" },
     update: {},
     create: {
       email: "madhav@neokred.tech",
       name: "Madhav",
-      role: "MEMBER",
+      role: "EMPLOYEE",
     },
   });
-  console.log(`  ✅ Member user: ${memberUser.email}`);
+  console.log(`  ✅ Employee user: ${employeeUser.email}`);
 
   // ─── Create sample updates ───
   const collectbot = await prisma.product.findUnique({
-    where: { slug: "collectbot" },
+    where: { name: "Collectbot" },
   });
 
   if (collectbot) {
@@ -90,7 +72,7 @@ async function main() {
           "We are integrating with our own payment gateway and from next quarter we will be integrating this to all our internal products.",
         status: "WIP",
         productId: collectbot.id,
-        authorId: adminUser.id,
+        authorId: employeeUser.id,
       },
     });
     console.log(`  ✅ Sample update: ${sampleUpdate.title}`);
@@ -99,9 +81,8 @@ async function main() {
     const sampleFeedback = await prisma.feedback.create({
       data: {
         message: "New UI is good!",
-        isAnonymous: true,
         productId: collectbot.id,
-        authorId: memberUser.id,
+        authorId: employeeUser.id,
       },
     });
     console.log(`  ✅ Sample feedback: "${sampleFeedback.message}"`);

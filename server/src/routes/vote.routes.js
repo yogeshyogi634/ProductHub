@@ -1,9 +1,9 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { protect } = require("../middleware/auth.middleware");
-const { castVote, removeVote } = require("../controllers/vote.controller");
+import { protect } from "../middleware/auth.middleware.js";
+import { castVote, removeVote } from "../controllers/vote.controller.js";
 
 router.post("/", protect, castVote);
 router.delete("/:updateId", protect, removeVote);
 
-module.exports = router;
+export default router;

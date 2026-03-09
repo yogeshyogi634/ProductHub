@@ -1,18 +1,26 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { protect } = require("../middleware/auth.middleware");
-const {
+import { protect, restrictTo } from "../middleware/auth.middleware.js";
+import {
   getUpdates,
   getUpdateById,
+  getUpdatesByProduct,
   createUpdate,
   editUpdate,
+  changeStatus,
+  getStatusHistory,
   deleteUpdate,
-} = require("../controllers/update.controller");
+  getStatuses,
+} from "../controllers/update.controller.js";
 
+router.get("/statuses", protect, getStatuses);
 router.get("/", protect, getUpdates);
+router.get("/product/:productId", protect, getUpdatesByProduct);
 router.get("/:id", protect, getUpdateById);
-router.post("/", protect, createUpdate);
-router.put("/:id", protect, editUpdate);
-router.delete("/:id", protect, deleteUpdate);
+router.get("/:id/history", protect, getStatusHistory);
+router.post("/", protect, restrictTo("ADMIN", "MANAGEMENT"), createUpdate);
+router.put("/:id", protect, restrictTo("ADMIN", "MANAGEMENT"), editUpdate);
+router.patch("/:id/status", protect, restrictTo("ADMIN", "MANAGEMENT"), changeStatus);
+router.delete("/:id", protect, restrictTo("ADMIN", "MANAGEMENT"), deleteUpdate);
 
-module.exports = router;
+export default router;
