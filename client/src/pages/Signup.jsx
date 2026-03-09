@@ -294,7 +294,7 @@ export default function SignupPage() {
                   <button
                     type="button"
                     onClick={() => setStep("details")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-orange-500 hover:text-orange-600 font-medium"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-primary hover:opacity-80 font-medium"
                   >
                     Edit Details
                   </button>
@@ -316,7 +316,7 @@ export default function SignupPage() {
                 loading ||
                 (step === "details" && (!!emailError || !emailPrefix.trim()))
               }
-              className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/15 mt-2"
+              className="w-full py-3 bg-brand-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -354,7 +354,7 @@ export default function SignupPage() {
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+                className="text-brand-primary hover:opacity-80 font-medium transition-colors"
               >
                 Sign in
               </Link>
@@ -376,7 +376,7 @@ export default function SignupPage() {
               {/* Success Icon */}
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-3">
                 <svg
-                  className="w-6 h-6 text-orange-600"
+                  className="w-6 h-6 text-brand-primary"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -407,7 +407,7 @@ export default function SignupPage() {
 
               <button
                 onClick={handleClosePopup}
-                className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer"
+                className="w-full py-3 bg-brand-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer"
               >
                 Got it!
               </button>

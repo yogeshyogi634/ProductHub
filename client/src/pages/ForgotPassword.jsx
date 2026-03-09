@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-orange-500"
+                  className="text-brand-primary"
                 >
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
@@ -95,14 +95,14 @@ export default function ForgotPasswordPage() {
               <p className="text-text-default-secondary text-sm mb-2">
                 We&apos;ve sent a password reset link to:
               </p>
-              <p className="text-orange-500 font-medium mb-6">{email}</p>
+              <p className="text-brand-primary font-medium mb-6">{email}</p>
               <p className="text-text-default-secondary/60 text-xs mb-6">
                 If you don&apos;t see the email, check your spam folder. The
                 link expires in 1 hour.
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 text-orange-500 hover:text-orange-600 text-sm font-medium transition-colors"
+                className="inline-flex items-center gap-2 text-brand-primary hover:opacity-80 text-sm font-medium transition-colors"
               >
                 <svg
                   width="16"
@@ -151,7 +151,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={loading || !emailPrefix.trim()}
-                className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/15"
+                className="w-full py-3 bg-brand-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
@@ -187,7 +187,7 @@ export default function ForgotPasswordPage() {
                 Remember your password?{" "}
                 <Link
                   to="/login"
-                  className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+                  className="text-brand-primary hover:opacity-80 font-medium transition-colors"
                 >
                   Sign in
                 </Link>

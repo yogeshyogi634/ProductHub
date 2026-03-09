@@ -543,17 +543,17 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                 {!isAdmin && !isSelf && (
                     confirmRemove ? (
                         <div className="flex items-center justify-end gap-2">
-                            <span className="text-xs text-red-300">Remove?</span>
+                            <span className="text-xs text-text-default-secondary">Remove?</span>
                             <button
                                 onClick={() => { onRemove(); setConfirmRemove(false); }}
                                 disabled={loading}
-                                className="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50"
+                                className="px-2.5 py-1 bg-background-actions-error hover:bg-stroke-actions-error-hover text-white text-xs font-medium rounded-md transition-colors disabled:opacity-50 shadow-sm"
                             >
                                 Yes
                             </button>
                             <button
                                 onClick={() => setConfirmRemove(false)}
-                                className="px-2.5 py-1 bg-white/10 hover:bg-white/15 text-white/70 text-xs font-medium rounded-md transition-colors"
+                                className="px-2.5 py-1 bg-background-card-secondary hover:bg-background-card-primary border border-stroke-default-primary text-text-default-primary text-xs font-medium rounded-md transition-colors"
                             >
                                 No
                             </button>
@@ -562,7 +562,7 @@ function UserRow({ user, isSelf, loading, onRoleChange, onRemove }) {
                         <button
                             onClick={() => setConfirmRemove(true)}
                             disabled={loading}
-                            className="px-3 py-1.5 bg-red-600/15 hover:bg-red-600/25 border border-red-500/25 text-red-300 text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                            className="px-3 py-1.5 bg-background-actions-error hover:bg-stroke-actions-error-hover text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                         >
                             Remove
                         </button>

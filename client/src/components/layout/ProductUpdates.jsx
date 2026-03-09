@@ -42,7 +42,7 @@ export function ProductUpdates() {
           </h2>
 
           {/* Filter Tabs */}
-          <div className="flex gap-sm items-center">
+          <div className="flex gap-1 items-center bg-background-app rounded-lg p-1 border border-stroke-default-primary-v2">
             {STATUS_TABS.map((tab) => {
               const isActive = tab === activeStatusFilter;
               return (
@@ -50,10 +50,10 @@ export function ProductUpdates() {
                   key={tab}
                   onClick={() => setActiveStatusFilter(tab)}
                   className={[
-                    "px-md py-xs rounded-max text-sm font-medium border transition-colors",
+                    "px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200",
                     isActive
-                      ? "bg-background-card-secondary border-stroke-default-inverse text-text-default-primary"
-                      : "bg-background-card-primary border-stroke-default-primary text-text-default-secondary hover:bg-background-card-secondary",
+                      ? "bg-brand-primary text-text-brand-on-background shadow-sm"
+                      : "text-text-default-secondary hover:text-text-default-primary hover:bg-background-card-primary",
                   ].join(" ")}
                 >
                   {tab}

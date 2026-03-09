@@ -80,12 +80,9 @@ function sendWelcomeEmail(to, userName, department) {
             
             <p>If you need any assistance or have questions, don't hesitate to reach out to your team lead or system administrator.</p>
             
-            <p>Welcome aboard!<br>The Neo Product Hub Team</p>
+            <p>Welcome aboard!<br>Product Wall Team</p>
         </div>
-        <div class="footer">
-            <p>This is an automated welcome message.</p>
-            <p>&copy; ${new Date().getFullYear()} Neokred Technologies. All rights reserved.</p>
-        </div>
+       
     </body>
     </html>
   `;
@@ -141,7 +138,7 @@ async function sendOTPEmail(email, name, otpCode) {
             
             <p>If you're having trouble accessing your account, please contact your system administrator.</p>
             
-            <p>Best regards,<br>The Neo Product Hub Team</p>
+            <p>Best regards,<br>Product Wall Team</p>
         </div>
         <div class="footer">
             <p>This is an automated message. Please do not reply to this email.</p>
@@ -184,7 +181,7 @@ function validateEmailDomain(email) {
 function sendApprovalEmail(to, userName) {
   const subject = "Account Approved - Neo Product Hub";
   const text = `Hello ${userName}, your account has been approved! You can now access Neo Product Hub with full privileges.`;
-  
+
   const html = `
     <!DOCTYPE html>
     <html>
@@ -226,7 +223,7 @@ function sendApprovalEmail(to, userName) {
             
             <p>If you have any questions or need assistance, don't hesitate to reach out to your team lead or system administrator.</p>
             
-            <p>Welcome aboard!<br>The Neo Product Hub Team</p>
+            <p>Welcome aboard!<br>Product Wall Team</p>
         </div>
         <div class="footer">
             <p>This is an automated notification message.</p>
@@ -243,7 +240,7 @@ function sendApprovalEmail(to, userName) {
 function sendRejectionEmail(to, userName, reason = null) {
   const subject = "Account Application Update - Neo Product Hub";
   const text = `Hello ${userName}, we regret to inform you that your account application has been declined. Please contact the administrator for more information.`;
-  
+
   const html = `
     <!DOCTYPE html>
     <html>
@@ -271,7 +268,7 @@ function sendRejectionEmail(to, userName, reason = null) {
                 <strong>📋 Application Status:</strong> We regret to inform you that your account application has been declined.
             </div>
             
-            ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ''}
+            ${reason ? `<p><strong>Reason:</strong> ${reason}</p>` : ""}
             
             <div class="contact-info">
                 <strong>📞 What's Next?</strong>
@@ -285,12 +282,9 @@ function sendRejectionEmail(to, userName, reason = null) {
             
             <p>We appreciate your interest in Neo Product Hub. If you have any questions about this decision or the application process, please don't hesitate to reach out to the administrator.</p>
             
-            <p>Thank you for your understanding.<br>The Neo Product Hub Team</p>
+            <p>Thank you for your understanding.<br>Product Wall Team/p>
         </div>
-        <div class="footer">
-            <p>This is an automated notification message.</p>
-            <p>&copy; ${new Date().getFullYear()} Neokred Technologies. All rights reserved.</p>
-        </div>
+       
     </body>
     </html>
   `;

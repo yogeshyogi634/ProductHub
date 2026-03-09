@@ -96,3 +96,25 @@
 .dark .dark-invert {
   filter: brightness(0) invert(1);
 }
+
+/* ── Cursor Pointer Utilities ──────────────────────────────────────────── */
+/* Add cursor pointer to all clickable elements */
+button,
+a,
+[role="button"],
+[onClick],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+label[for],
+select {
+  cursor: pointer;
+}
+
+/* Disabled state should have default cursor */
+button:disabled,
+input:disabled,
+select:disabled,
+[disabled] {
+  cursor: not-allowed;
+}

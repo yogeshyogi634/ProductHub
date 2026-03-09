@@ -177,7 +177,7 @@ export default function LoginPage() {
             <div className="text-right -mt-1">
               <Link
                 to="/forgot-password"
-                className="text-xs text-orange-500 hover:text-orange-600 font-medium transition-colors"
+                className="text-xs text-brand-primary hover:opacity-80 font-medium transition-colors"
               >
                 Forgot password?
               </Link>
@@ -187,7 +187,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !emailPrefix.trim()}
-              className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-orange-500/15"
+              className="w-full py-3 bg-brand-primary hover:opacity-90 text-white font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -221,7 +221,7 @@ export default function LoginPage() {
               Don&apos;t have an account?{" "}
               <Link
                 to="/signup"
-                className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+                className="text-brand-primary hover:opacity-80 font-medium transition-colors"
               >
                 Sign up
               </Link>

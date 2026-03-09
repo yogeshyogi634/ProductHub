@@ -93,7 +93,7 @@ export function Navbar() {
                 className={[
                   "rounded-xs px-md py-2xs flex gap-sm items-center h-full transition-colors",
                   isActive
-                    ? "bg-background-card-primary border-[1.5px] border-brand-wakame"
+                    ? "bg-background-card-primary border-[1.5px] border-brand-primary"
                     : "bg-background-app border border-stroke-default-primary-v2 hover:bg-background-card-primary",
                 ].join(" ")}
               >
